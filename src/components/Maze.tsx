@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
-import { createIterativeBacktrackingMaze } from "../logic/iterativeBacktracking";
+import type { Maze } from "../models/maze";
 
 interface MazeProps {
+  maze: Maze;
   width: number;
 }
 
 export function Maze(props: MazeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const maze = createIterativeBacktrackingMaze(100, 100, { row: 0, col: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -20,7 +20,10 @@ export function Maze(props: MazeProps) {
     canvas.height = props.width;
 
     const cellSize = Math.floor(
-      Math.min(canvas.width / maze[0].length, canvas.height / maze.length),
+      Math.min(
+        canvas.width / props.maze[0].length,
+        canvas.height / props.maze.length,
+      ),
     );
 
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -30,9 +33,9 @@ export function Maze(props: MazeProps) {
     context.fillStyle = "red";
     context.fillRect(0, 0, cellSize, cellSize);
 
-    for (let row = 0; row < maze.length; row++) {
-      for (let col = 0; col < maze[0].length; col++) {
-        const cell = maze[row][col];
+    for (let row = 0; row < props.maze.length; row++) {
+      for (let col = 0; col < props.maze[0].length; col++) {
+        const cell = props.maze[row][col];
         const x = col * cellSize;
         const y = row * cellSize;
 
@@ -58,7 +61,7 @@ export function Maze(props: MazeProps) {
         context.stroke();
       }
     }
-  }, [maze]);
+  }, [props.maze]);
 
   return (
     <canvas
