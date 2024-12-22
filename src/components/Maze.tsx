@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createIterativeBacktrackingMaze } from "../logic/recursiveBacktracking";
+import { createIterativeBacktrackingMaze } from "../logic/iterativeBacktracking";
 
 interface MazeProps {
   width: number;
