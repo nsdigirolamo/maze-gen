@@ -1,13 +1,22 @@
 import { useEffect, useRef } from "react";
 import type { Maze } from "../models/maze";
+import Coordinate from "../models/coordinate";
 
 interface MazeProps {
   maze: Maze;
   width: number;
+  height?: number;
+  start?: Coordinate;
+  end?: Coordinate;
 }
 
-export function Maze(props: MazeProps) {
+function Maze(props: MazeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const width = props.width;
+  const height = props.height ? props.height : props.width;
+  const start = props.start ? props.start : { row: 0, col: 0 };
+  const end = props.end ? props.end : { row: width - 1, col: width - 1 };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,22 +25,33 @@ export function Maze(props: MazeProps) {
     const context = canvas.getContext("2d");
     if (context === null) return;
 
-    canvas.width = props.width;
-    canvas.height = props.width;
+    canvas.width = width;
+    canvas.height = height;
 
-    const cellSize = Math.floor(
-      Math.min(
-        canvas.width / props.maze[0].length,
-        canvas.height / props.maze.length,
-      ),
+    const cellSize = Math.min(
+      canvas.width / props.maze[0].length,
+      canvas.height / props.maze.length,
     );
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.strokeStyle = "black";
-    context.lineWidth = 1;
+    context.lineWidth = 2;
+
+    context.fillStyle = "green";
+    context.fillRect(
+      start.col * cellSize,
+      start.row * cellSize,
+      cellSize,
+      cellSize,
+    );
 
     context.fillStyle = "red";
-    context.fillRect(0, 0, cellSize, cellSize);
+    context.fillRect(
+      end.col * cellSize,
+      end.row * cellSize,
+      cellSize,
+      cellSize,
+    );
 
     for (let row = 0; row < props.maze.length; row++) {
       for (let col = 0; col < props.maze[0].length; col++) {
@@ -61,12 +81,9 @@ export function Maze(props: MazeProps) {
         context.stroke();
       }
     }
-  }, [props.maze]);
+  }, [props.maze, start, end]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ width: props.width, height: props.width }}
-    />
-  );
+  return <canvas ref={canvasRef} style={{ width: width, height: height }} />;
 }
+
+export default Maze;
