@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import Maze from "./components/Maze";
+import Visualizer from "./components/Maze";
 import { createIterativeBacktrackingMaze } from "./logic/iterativeBacktracking";
 import Coordinate from "./models/coordinate";
 import CellSelector from "./components/CellSelector";
@@ -25,7 +25,7 @@ function App() {
     <>
       <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
       <div className="container">
-        <Maze
+        <Visualizer
           width={Math.floor(window.innerHeight - 100)}
           maze={maze}
           start={start}

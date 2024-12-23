@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import type { Maze } from "../models/maze";
+import { Maze } from "../models/maze";
 import Coordinate from "../models/coordinate";
 
-interface MazeProps {
+interface VisualizerProps {
   maze: Maze;
   width: number;
   height?: number;
@@ -10,7 +10,7 @@ interface MazeProps {
   end?: Coordinate;
 }
 
-function Maze(props: MazeProps) {
+function Visualizer(props: VisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const width = props.width;
@@ -86,4 +86,4 @@ function Maze(props: MazeProps) {
   return <canvas ref={canvasRef} style={{ width: width, height: height }} />;
 }
 
-export default Maze;
+export default Visualizer;
