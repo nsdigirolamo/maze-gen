@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import Visualizer from "./components/Maze";
+import Visualizer from "./components/Visualizer";
 import { createIterativeBacktrackingMaze } from "./logic/iterativeBacktracking";
 import Coordinate from "./models/coordinate";
 import CellSelector from "./components/CellSelector";
@@ -24,38 +24,36 @@ function App() {
   return (
     <>
       <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
-      <div className="container">
-        <Visualizer
-          width={Math.floor(window.innerHeight - 100)}
-          maze={maze}
-          start={start}
-          end={end}
-        />
-        <div style={{ margin: "0 10vh 0 10vh" }}>
-          <div>
-            Size:{" "}
-            <input
-              type="number"
-              onChange={(event) => handleSize(+event.target.value)}
-              value={"" + size}
-            />
-          </div>
-          <CellSelector
-            initialValue={start}
-            onChange={setStart}
-            width={size}
-            height={size}
-            label="Start"
-          />
-          <CellSelector
-            initialValue={end}
-            onChange={setEnd}
-            width={size}
-            height={size}
-            label="End"
+      <div className="menu">
+        <div>
+          Size:{" "}
+          <input
+            type="number"
+            onChange={(event) => handleSize(+event.target.value)}
+            value={"" + size}
           />
         </div>
+        <CellSelector
+          initialValue={start}
+          onChange={setStart}
+          width={size}
+          height={size}
+          label="Start Cell"
+        />
+        <CellSelector
+          initialValue={end}
+          onChange={setEnd}
+          width={size}
+          height={size}
+          label="End Cell"
+        />
       </div>
+      <Visualizer
+        width={Math.floor(window.innerHeight - 100)}
+        maze={maze}
+        start={start}
+        end={end}
+      />
       <footer
         style={{
           textAlign: "center",
