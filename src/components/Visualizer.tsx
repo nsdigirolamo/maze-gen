@@ -4,21 +4,16 @@ import Coordinate from "../models/coordinate";
 
 interface VisualizerProps {
   maze: Maze;
-  width: number;
-  height?: number;
-  start?: Coordinate;
-  end?: Coordinate;
+  cellSize?: number;
+  start: Coordinate;
+  end: Coordinate;
 }
 
 function Visualizer(props: VisualizerProps) {
-  console.log("render");
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const width = props.width;
-  const height = props.height ? props.height : props.width;
-  const start = props.start ? props.start : { row: 0, col: 0 };
-  const end = props.end ? props.end : { row: width - 1, col: width - 1 };
+  const width = props.maze[0].length;
+  const height = props.maze.length;
+  const cellSize = props.cellSize ? props.cellSize : 15;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -27,13 +22,8 @@ function Visualizer(props: VisualizerProps) {
     const context = canvas.getContext("2d");
     if (context === null) return;
 
-    canvas.width = width;
-    canvas.height = height;
-
-    const cellSize = Math.min(
-      canvas.width / props.maze[0].length,
-      canvas.height / props.maze.length,
-    );
+    canvas.width = cellSize * width;
+    canvas.height = cellSize * height;
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.strokeStyle = "black";
@@ -41,16 +31,16 @@ function Visualizer(props: VisualizerProps) {
 
     context.fillStyle = "green";
     context.fillRect(
-      start.col * cellSize,
-      start.row * cellSize,
+      props.start.col * cellSize,
+      props.start.row * cellSize,
       cellSize,
       cellSize,
     );
 
     context.fillStyle = "red";
     context.fillRect(
-      end.col * cellSize,
-      end.row * cellSize,
+      props.end.col * cellSize,
+      props.end.row * cellSize,
       cellSize,
       cellSize,
     );
@@ -83,9 +73,22 @@ function Visualizer(props: VisualizerProps) {
         context.stroke();
       }
     }
-  }, [props.maze, start, end]);
+  }, [props.maze, props.start, props.end]);
 
-  return <canvas ref={canvasRef} style={{ width: width, height: height }} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        paddingLeft: "0px",
+        paddingRight: "0px",
+        marginLeft: "auto",
+        marginRight: "auto",
+        display: "block",
+        height: cellSize * height,
+        width: cellSize * width,
+      }}
+    />
+  );
 }
 
 export default Visualizer;

@@ -33,6 +33,7 @@ function App() {
   return (
     <>
       <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
+
       <table className="menu">
         <tbody>
           <NumberSelectorTr
@@ -61,16 +62,13 @@ function App() {
           />
         </tbody>
       </table>
-      <Visualizer
-        width={Math.floor(window.innerHeight - 100)}
-        maze={maze}
-        start={start}
-        end={end}
-      />
+
+      <Visualizer maze={maze} start={start} end={end} />
+
       <footer
         style={{
           textAlign: "center",
-          margin: "10vh 0 2vh 0",
+          margin: "50vh 0 2vh 0",
           fontSize: "0.75rem",
         }}
       >
