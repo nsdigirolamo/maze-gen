@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import Coordinate from "../models/coordinate";
 
 interface CoordinateSelectorTrProps {
-  initialValue: Coordinate;
-  onChange: (newCoordinate: Coordinate) => void;
-  width: number;
-  height: number;
   label: string;
+  initialValue: Coordinate;
+  onChange: (newValue: Coordinate) => void;
+  maxRowValue: number;
+  maxColValue: number;
 }
 
 function CoordinateSelectorTr(props: CoordinateSelectorTrProps) {
   const [coordinate, setCoordinate] = useState<Coordinate>(props.initialValue);
-  const handleStart = (newRow: number, newCol: number) => {
+  const handleChange = (newRow: number, newCol: number) => {
     setCoordinate({
-      row: Math.min(Math.max(newRow, 0), props.height - 1),
-      col: Math.min(Math.max(newCol, 0), props.width - 1),
+      row: Math.min(Math.max(newRow, 0), props.maxRowValue - 1),
+      col: Math.min(Math.max(newCol, 0), props.maxColValue - 1),
     });
   };
 
@@ -29,13 +29,17 @@ function CoordinateSelectorTr(props: CoordinateSelectorTrProps) {
         <span>Row: </span>
         <input
           type="number"
-          onChange={(event) => handleStart(+event.target.value, coordinate.col)}
+          onChange={(event) =>
+            handleChange(+event.target.value, coordinate.col)
+          }
           value={"" + coordinate.row}
         />
         <span>Column: </span>
         <input
           type="number"
-          onChange={(event) => handleStart(coordinate.row, +event.target.value)}
+          onChange={(event) =>
+            handleChange(coordinate.row, +event.target.value)
+          }
           value={"" + coordinate.col}
         />
       </td>

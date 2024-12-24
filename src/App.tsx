@@ -4,51 +4,62 @@ import Visualizer from "./components/Visualizer";
 import { createIterativeBacktrackingMaze } from "./logic/iterativeBacktracking";
 import Coordinate from "./models/coordinate";
 import CoordinateSelectorTr from "./components/CoordinateSelectorTr";
+import NumberSelectorTr from "./components/NumberSelectorTr";
 
 function App() {
-  const [size, setSize] = useState(10);
+  const [height, setHeight] = useState(10);
+  const [width, setWidth] = useState(10);
   const [start, setStart] = useState<Coordinate>({ row: 0, col: 0 });
-  const [end, setEnd] = useState<Coordinate>({ row: size - 1, col: size - 1 });
+  const [end, setEnd] = useState<Coordinate>({
+    row: height - 1,
+    col: width - 1,
+  });
   const [maze, setMaze] = useState(
-    createIterativeBacktrackingMaze(size, size, start),
+    createIterativeBacktrackingMaze(width, height, start),
   );
 
-  const handleSize = (newSize: number) => {
-    setSize(newSize <= 0 ? 1 : newSize);
-  };
-
   useEffect(() => {
-    setMaze(createIterativeBacktrackingMaze(size, size, start));
-  }, [size]);
+    setMaze(createIterativeBacktrackingMaze(width, height, start));
+    setStart({
+      row: Math.min(start.row, height - 1),
+      col: Math.min(start.col, width - 1),
+    });
+    setEnd({
+      row: Math.min(end.row, height - 1),
+      col: Math.min(end.col, width - 1),
+    });
+  }, [width, height]);
 
   return (
     <>
       <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
       <table className="menu">
-        <tr>
-          <td className="label">Size</td>
-          <td>
-            <input
-              type="number"
-              onChange={(event) => handleSize(+event.target.value)}
-              value={"" + size}
-            />
-          </td>
-        </tr>
-        <CoordinateSelectorTr
-          initialValue={start}
-          onChange={setStart}
-          width={size}
-          height={size}
-          label="Start Cell"
-        />
-        <CoordinateSelectorTr
-          initialValue={end}
-          onChange={setEnd}
-          width={size}
-          height={size}
-          label="End Cell"
-        />
+        <tbody>
+          <NumberSelectorTr
+            label="Width"
+            initialValue={width}
+            onChange={setWidth}
+          />
+          <NumberSelectorTr
+            label="Height"
+            initialValue={height}
+            onChange={setHeight}
+          />
+          <CoordinateSelectorTr
+            label="Start Cell"
+            initialValue={start}
+            onChange={setStart}
+            maxRowValue={height}
+            maxColValue={width}
+          />
+          <CoordinateSelectorTr
+            label="End Cell"
+            initialValue={end}
+            onChange={setEnd}
+            maxRowValue={height}
+            maxColValue={width}
+          />
+        </tbody>
       </table>
       <Visualizer
         width={Math.floor(window.innerHeight - 100)}

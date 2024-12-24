@@ -11,6 +11,8 @@ interface VisualizerProps {
 }
 
 function Visualizer(props: VisualizerProps) {
+  console.log("render");
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const width = props.width;
