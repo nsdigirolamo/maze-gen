@@ -23,37 +23,23 @@ function CellSelector(props: CoordinateSelectorProps) {
   }, [coordinate]);
 
   return (
-    <div className="cell-selector">
-      <div className="row">
-        <div className="col">{props.label}</div>
-        <div className="col">
-          <div className="row">
-            <div className="col input-label">Row:</div>
-            <div className="col">
-              <input
-                type="number"
-                onChange={(event) =>
-                  handleStart(+event.target.value, coordinate.col)
-                }
-                value={"" + coordinate.row}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col input-label">Column:</div>
-            <div className="col">
-              <input
-                type="number"
-                onChange={(event) =>
-                  handleStart(coordinate.row, +event.target.value)
-                }
-                value={"" + coordinate.col}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <tr>
+      <td className="label">{props.label}</td>
+      <td>
+        <span>Row: </span>
+        <input
+          type="number"
+          onChange={(event) => handleStart(+event.target.value, coordinate.col)}
+          value={"" + coordinate.row}
+        />
+        <span>Column: </span>
+        <input
+          type="number"
+          onChange={(event) => handleStart(coordinate.row, +event.target.value)}
+          value={"" + coordinate.col}
+        />
+      </td>
+    </tr>
   );
 }
 

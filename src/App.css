@@ -13,21 +13,18 @@
 }
 
 .menu {
-  width: 300px;
-  height: 300px;
+  width: 750px;
+  height: 100px;
   background-color: lightgrey;
   padding: 25px;
   margin: 25px;
 }
 
-.cell-selector {
-  margin: 10px 0 10px 0;
+.menu .label {
+  width: 100px;
 }
 
-.cell-selector .input-label {
-  margin: 0 10px 0 10px;
-}
-
-.cell-selector input {
-  width: 75px;
+.menu input {
+  width: 50px;
+  margin-right: 10px;
 }

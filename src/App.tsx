@@ -24,15 +24,17 @@ function App() {
   return (
     <>
       <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
-      <div className="menu">
-        <div>
-          Size:{" "}
-          <input
-            type="number"
-            onChange={(event) => handleSize(+event.target.value)}
-            value={"" + size}
-          />
-        </div>
+      <table className="menu">
+        <tr>
+          <td className="label">Size</td>
+          <td>
+            <input
+              type="number"
+              onChange={(event) => handleSize(+event.target.value)}
+              value={"" + size}
+            />
+          </td>
+        </tr>
         <CellSelector
           initialValue={start}
           onChange={setStart}
@@ -47,7 +49,7 @@ function App() {
           height={size}
           label="End Cell"
         />
-      </div>
+      </table>
       <Visualizer
         width={Math.floor(window.innerHeight - 100)}
         maze={maze}
