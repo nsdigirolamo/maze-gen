@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Coordinate from "../models/coordinate";
 
-interface CoordinateSelectorProps {
+interface CoordinateSelectorTrProps {
   initialValue: Coordinate;
   onChange: (newCoordinate: Coordinate) => void;
   width: number;
@@ -9,7 +9,7 @@ interface CoordinateSelectorProps {
   label: string;
 }
 
-function CellSelector(props: CoordinateSelectorProps) {
+function CoordinateSelectorTr(props: CoordinateSelectorTrProps) {
   const [coordinate, setCoordinate] = useState<Coordinate>(props.initialValue);
   const handleStart = (newRow: number, newCol: number) => {
     setCoordinate({
@@ -43,4 +43,4 @@ function CellSelector(props: CoordinateSelectorProps) {
   );
 }
 
-export default CellSelector;
+export default CoordinateSelectorTr;

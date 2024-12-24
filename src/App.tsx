@@ -3,7 +3,7 @@ import "./App.css";
 import Visualizer from "./components/Visualizer";
 import { createIterativeBacktrackingMaze } from "./logic/iterativeBacktracking";
 import Coordinate from "./models/coordinate";
-import CellSelector from "./components/CellSelector";
+import CoordinateSelectorTr from "./components/CoordinateSelectorTr";
 
 function App() {
   const [size, setSize] = useState(10);
@@ -35,14 +35,14 @@ function App() {
             />
           </td>
         </tr>
-        <CellSelector
+        <CoordinateSelectorTr
           initialValue={start}
           onChange={setStart}
           width={size}
           height={size}
           label="Start Cell"
         />
-        <CellSelector
+        <CoordinateSelectorTr
           initialValue={end}
           onChange={setEnd}
           width={size}
