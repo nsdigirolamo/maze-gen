@@ -1,4 +1,5 @@
 import { createCell, Cell } from "./cell.ts";
+import Coordinate from "./coordinate.ts";
 
 export type Maze = Cell[][];
 
@@ -11,4 +12,8 @@ export function createMaze(width: number, height: number): Maze {
     }
   }
   return nodes;
+}
+
+export function getCellAtCoordinate(maze: Maze, coordinate: Coordinate) {
+  return maze[coordinate.row][coordinate.col];
 }

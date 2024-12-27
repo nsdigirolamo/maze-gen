@@ -1,19 +1,32 @@
 import { useEffect, useRef } from "react";
-import { Maze } from "../models/maze";
+import { getCellAtCoordinate, Maze } from "../models/maze";
 import Coordinate from "../models/coordinate";
 
 interface VisualizerProps {
   maze: Maze;
   cellSize?: number;
-  start: Coordinate;
-  end: Coordinate;
+  start?: Coordinate;
+  end?: Coordinate;
 }
 
 function Visualizer(props: VisualizerProps) {
+  const cellSize = props.cellSize ? props.cellSize : 25;
+  const mazeWidth = props.maze[0].length;
+  const mazeHeight = props.maze.length;
+
+  const start = props.start
+    ? props.start
+    : { row: 0, col: Math.floor(mazeWidth / 2.0) };
+  const end = props.end
+    ? props.end
+    : { row: mazeHeight - 1, col: Math.floor(mazeWidth / 2.0) };
+  getCellAtCoordinate(props.maze, start).walls.top = false;
+  getCellAtCoordinate(props.maze, end).walls.bottom = false;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const width = props.maze[0].length;
-  const height = props.maze.length;
-  const cellSize = props.cellSize ? props.cellSize : 15;
+  const padding = 10;
+  const canvasWidth = 2 * padding + mazeWidth * cellSize;
+  const canvasHeight = 2 * padding + mazeHeight * cellSize;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,34 +35,18 @@ function Visualizer(props: VisualizerProps) {
     const context = canvas.getContext("2d");
     if (context === null) return;
 
-    canvas.width = cellSize * width;
-    canvas.height = cellSize * height;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.strokeStyle = "black";
     context.lineWidth = 2;
 
-    context.fillStyle = "green";
-    context.fillRect(
-      props.start.col * cellSize,
-      props.start.row * cellSize,
-      cellSize,
-      cellSize,
-    );
-
-    context.fillStyle = "red";
-    context.fillRect(
-      props.end.col * cellSize,
-      props.end.row * cellSize,
-      cellSize,
-      cellSize,
-    );
-
     for (let row = 0; row < props.maze.length; row++) {
       for (let col = 0; col < props.maze[0].length; col++) {
         const cell = props.maze[row][col];
-        const x = col * cellSize;
-        const y = row * cellSize;
+        const x = col * cellSize + padding;
+        const y = row * cellSize + padding;
 
         context.beginPath();
 
@@ -84,8 +81,8 @@ function Visualizer(props: VisualizerProps) {
         marginLeft: "auto",
         marginRight: "auto",
         display: "block",
-        height: cellSize * height,
-        width: cellSize * width,
+        height: canvasHeight,
+        width: canvasWidth,
       }}
     />
   );

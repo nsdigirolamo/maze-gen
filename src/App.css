@@ -1,3 +1,7 @@
+body {
+  font-family: sans-serif;
+}
+
 .container,
 .row {
   height: 100%;
@@ -13,9 +17,9 @@
 }
 
 .menu {
-  width: 450px;
+  width: 300px;
   height: 100px;
-  background-color: lightgrey;
+  border: solid black;
   padding: 25px;
   margin-left: auto;
   margin-right: auto;

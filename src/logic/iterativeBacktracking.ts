@@ -5,18 +5,12 @@ import { randomInt } from "./random";
 export function createIterativeBacktrackingMaze(
   width: number,
   height: number,
-  start?: Coordinate,
 ): Maze {
   let maze = createMaze(width, height);
   const visited: Set<string> = new Set<string>();
   const stack: Array<Coordinate> = new Array<Coordinate>();
 
-  start = start
-    ? start
-    : {
-        row: randomInt(0, height),
-        col: randomInt(0, width),
-      };
+  const start = { row: 0, col: Math.floor(width / 2.0) };
   visited.add(JSON.stringify(start));
   stack.push(start);
 
