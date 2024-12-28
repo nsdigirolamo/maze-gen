@@ -3,18 +3,38 @@ import "./App.css";
 import Visualizer from "./components/Visualizer";
 import { createIterativeBacktrackingMaze } from "./logic/iterativeBacktracking";
 import NumberSelectorTr from "./components/NumberSelectorTr";
+import { createKruskalsMaze } from "./logic/kruskals";
+
+const mazeCreatorFunctions = [
+  {
+    name: "Backtracking",
+    creator: createIterativeBacktrackingMaze,
+  },
+  {
+    name: "Kruskal's",
+    creator: createKruskalsMaze,
+  },
+];
 
 function App() {
   const [height, setHeight] = useState(10);
   const [width, setWidth] = useState(10);
+
+  const [creatorFunctionIndex, setCreatorFunctionIndex] = useState(0);
+  const handleSelect = (newValue: number) => {
+    setCreatorFunctionIndex(
+      Math.min(Math.max(newValue, 0), mazeCreatorFunctions.length - 1),
+    );
+  };
+
   const [maze, setMaze] = useState(
-    createIterativeBacktrackingMaze(width, height),
+    mazeCreatorFunctions[creatorFunctionIndex].creator(width, height),
   );
   const [updater, setUpdater] = useState(false);
 
   useEffect(() => {
-    setMaze(createIterativeBacktrackingMaze(width, height));
-  }, [width, height, updater]);
+    setMaze(mazeCreatorFunctions[creatorFunctionIndex].creator(width, height));
+  }, [width, height, updater, creatorFunctionIndex]);
 
   return (
     <>
@@ -32,6 +52,18 @@ function App() {
               initialValue={height}
               onChange={setHeight}
             />
+            <tr>
+              <td className="label">Algorithm</td>
+              <td>
+                <select onChange={(event) => handleSelect(+event.target.value)}>
+                  {mazeCreatorFunctions.map((element, index) => (
+                    <option value={index} key={index}>
+                      {element.name}
+                    </option>
+                  ))}
+                </select>
+              </td>
+            </tr>
           </tbody>
         </table>
         <div
