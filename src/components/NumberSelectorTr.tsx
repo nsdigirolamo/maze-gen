@@ -28,7 +28,7 @@ export default function NumberSelectorTr({
       <td>
         <input type="number" onChange={handleChange} value={"" + value} />
         <span>
-          {min} to {max - 1}
+          {min} to {max}
         </span>
       </td>
     </tr>
