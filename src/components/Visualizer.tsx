@@ -1,27 +1,20 @@
-import { useEffect, useRef } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 import { getCellAtCoordinate, Maze } from "../models/maze";
-import Coordinate from "../models/coordinate";
 
 interface VisualizerProps {
   maze: Maze;
-  cellSize?: number;
-  start?: Coordinate;
-  end?: Coordinate;
 }
 
-function Visualizer(props: VisualizerProps) {
-  const cellSize = props.cellSize ? props.cellSize : 25;
-  const mazeWidth = props.maze[0].length;
-  const mazeHeight = props.maze.length;
+export default function Visualizer({ maze }: VisualizerProps): ReactElement {
+  const cellSize = 25;
+  const mazeWidth = maze[0].length;
+  const mazeHeight = maze.length;
 
-  const start = props.start
-    ? props.start
-    : { row: 0, col: Math.floor(mazeWidth / 2.0) };
-  const end = props.end
-    ? props.end
-    : { row: mazeHeight - 1, col: Math.floor(mazeWidth / 2.0) };
-  getCellAtCoordinate(props.maze, start).walls.top = false;
-  getCellAtCoordinate(props.maze, end).walls.bottom = false;
+  const start = { row: 0, col: Math.floor(mazeWidth / 2.0) };
+  getCellAtCoordinate(maze, start).walls.top = false;
+
+  const end = { row: mazeHeight - 1, col: Math.floor(mazeWidth / 2.0) };
+  getCellAtCoordinate(maze, end).walls.bottom = false;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const padding = 10;
@@ -41,14 +34,13 @@ function Visualizer(props: VisualizerProps) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.strokeStyle = "black";
     context.lineWidth = 2;
+    context.beginPath();
 
-    for (let row = 0; row < props.maze.length; row++) {
-      for (let col = 0; col < props.maze[0].length; col++) {
-        const cell = props.maze[row][col];
+    for (let row = 0; row < maze.length; row++) {
+      for (let col = 0; col < maze[0].length; col++) {
+        const cell = maze[row][col];
         const x = col * cellSize + padding;
         const y = row * cellSize + padding;
-
-        context.beginPath();
 
         if (cell.walls.top) {
           context.moveTo(x, y);
@@ -66,11 +58,12 @@ function Visualizer(props: VisualizerProps) {
           context.moveTo(x, y);
           context.lineTo(x, y + cellSize);
         }
-
-        context.stroke();
       }
     }
-  }, [props.maze, props.start, props.end]);
+
+    context.stroke();
+    context.closePath();
+  }, [maze, start, end]);
 
   return (
     <canvas
@@ -87,5 +80,3 @@ function Visualizer(props: VisualizerProps) {
     />
   );
 }
-
-export default Visualizer;
