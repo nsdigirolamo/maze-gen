@@ -2,7 +2,7 @@ import { ReactElement, useState } from "react";
 import NumberSelectorTr from "./NumberSelectorTr";
 import { createIterativeBacktrackingMaze } from "../logic/iterativeBacktracking";
 import { createKruskalsMaze } from "../logic/kruskals";
-import { Maze } from "../models/maze";
+import Maze from "../models/maze";
 
 interface ControlPanelProps {
   onGenerate: (newMaze: Maze) => void;
@@ -19,9 +19,7 @@ const mazeCreatorFunctions = [
   },
 ];
 
-export default function ControlPanel({
-  onGenerate,
-}: ControlPanelProps): ReactElement {
+function ControlPanel({ onGenerate }: ControlPanelProps): ReactElement {
   const [height, setHeight] = useState(10);
   const [width, setWidth] = useState(10);
   const [creatorFunctionIndex, setCreatorFunctionIndex] = useState(0);
@@ -82,3 +80,5 @@ export default function ControlPanel({
     </>
   );
 }
+
+export default ControlPanel;

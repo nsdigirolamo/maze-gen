@@ -1,6 +1,8 @@
 import Coordinate from "./coordinate";
 
-export interface Edge {
+interface Edge {
   c1: Coordinate;
   c2: Coordinate;
 }
+
+export default Edge;

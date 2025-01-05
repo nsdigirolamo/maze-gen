@@ -1,5 +1,6 @@
 import Coordinate from "../models/coordinate";
-import { getEdges, createMaze, Maze, removeWallAtEdge } from "../models/maze";
+import Maze from "../models/maze";
+import { createMaze, getEdges, removeWallAtEdge } from "./maze";
 import { genRandomInt } from "./random";
 
 export function createKruskalsMaze(width: number, height: number): Maze {

@@ -1,11 +1,12 @@
 import { ReactElement, useEffect, useRef } from "react";
-import { getCellAtCoordinate, Maze } from "../models/maze";
+import { getCellAtCoordinate } from "../logic/maze";
+import Maze from "../models/maze";
 
 interface VisualizerProps {
   maze: Maze;
 }
 
-export default function Visualizer({ maze }: VisualizerProps): ReactElement {
+function Visualizer({ maze }: VisualizerProps): ReactElement {
   const cellSize = 25;
   const mazeWidth = maze[0].length;
   const mazeHeight = maze.length;
@@ -80,3 +81,5 @@ export default function Visualizer({ maze }: VisualizerProps): ReactElement {
     />
   );
 }
+
+export default Visualizer;

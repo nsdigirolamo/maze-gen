@@ -9,7 +9,7 @@ interface NumberSelectorTrProps {
 const min = 1;
 const max = 1000;
 
-export default function NumberSelectorTr({
+function NumberSelectorTr({
   label,
   initialValue,
   onChange,
@@ -34,3 +34,5 @@ export default function NumberSelectorTr({
     </tr>
   );
 }
+
+export default NumberSelectorTr;

@@ -1,5 +1,6 @@
 import Coordinate from "../models/coordinate";
-import { createMaze, Maze } from "../models/maze";
+import Maze from "../models/maze";
+import { createMaze } from "./maze";
 import { genRandomInt } from "./random";
 
 export function createIterativeBacktrackingMaze(

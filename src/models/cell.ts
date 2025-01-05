@@ -1,4 +1,4 @@
-export interface Cell {
+interface Cell {
   walls: {
     top: boolean;
     bottom: boolean;
@@ -7,13 +7,4 @@ export interface Cell {
   };
 }
 
-export function createCell(): Cell {
-  return {
-    walls: {
-      top: true,
-      bottom: true,
-      left: true,
-      right: true,
-    },
-  };
-}
+export default Cell;
