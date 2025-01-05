@@ -52,9 +52,7 @@ export function solveMaze(
         }
       };
 
-      console.log(current);
       const cell = maze[current.coordinate.row][current.coordinate.col];
-      console.log(cell);
       if (!cell.walls.top) {
         addNext({
           row: current.coordinate.row - 1,

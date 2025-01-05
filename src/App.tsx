@@ -9,7 +9,6 @@ function App() {
   const [showSolution, setShowSolution] = useState<boolean>(false);
 
   const handleToggle = () => {
-    console.log("toggle!");
     setShowSolution(!showSolution);
   };
 
