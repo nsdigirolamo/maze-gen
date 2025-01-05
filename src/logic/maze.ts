@@ -16,6 +16,94 @@ export function createMaze(width: number, height: number): Maze {
   return nodes;
 }
 
+export function solveMaze(
+  maze: Maze,
+  start: Coordinate,
+  end: Coordinate,
+): Coordinate[] {
+  interface BfsNode {
+    parent: BfsNode | null;
+    coordinate: Coordinate;
+  }
+
+  const bfs = (root: BfsNode): BfsNode | null => {
+    const queue: BfsNode[] = [root];
+    const explored: Set<string> = new Set<string>([
+      JSON.stringify(root.coordinate),
+    ]);
+
+    while (0 < queue.length) {
+      const current = queue.shift()!;
+      if (
+        current.coordinate.row === end.row &&
+        current.coordinate.col === end.col
+      ) {
+        return current;
+      }
+
+      const addNext = (nextCoordinate: Coordinate) => {
+        if (!explored.has(JSON.stringify(nextCoordinate))) {
+          explored.add(JSON.stringify(nextCoordinate));
+          const next: BfsNode = {
+            parent: current,
+            coordinate: nextCoordinate,
+          };
+          queue.push(next);
+        }
+      };
+
+      console.log(current);
+      const cell = maze[current.coordinate.row][current.coordinate.col];
+      console.log(cell);
+      if (!cell.walls.top) {
+        addNext({
+          row: current.coordinate.row - 1,
+          col: current.coordinate.col,
+        });
+      }
+      if (!cell.walls.bottom) {
+        addNext({
+          row: current.coordinate.row + 1,
+          col: current.coordinate.col,
+        });
+      }
+      if (!cell.walls.left) {
+        addNext({
+          row: current.coordinate.row,
+          col: current.coordinate.col - 1,
+        });
+      }
+      if (!cell.walls.right) {
+        addNext({
+          row: current.coordinate.row,
+          col: current.coordinate.col + 1,
+        });
+      }
+    }
+
+    return null;
+  };
+
+  let solution: Coordinate[] = [];
+  const endNode = bfs({ parent: null, coordinate: start });
+  let currentNode = endNode;
+  while (currentNode !== null) {
+    solution = [currentNode.coordinate, ...solution];
+    currentNode = currentNode.parent;
+  }
+
+  return solution;
+}
+
+export function CoordinateInBounds(maze: Maze, coordinate: Coordinate) {
+  return (
+    0 <= coordinate.row &&
+    coordinate.row < maze.length &&
+    0 <= coordinate.col &&
+    coordinate.col < maze[0].length
+  );
+}
+
 export function getCellAtCoordinate(maze: Maze, coordinate: Coordinate) {
   return maze[coordinate.row][coordinate.col];
 }

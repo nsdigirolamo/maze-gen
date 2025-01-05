@@ -5,7 +5,7 @@ import { createKruskalsMaze } from "../logic/kruskals";
 import Maze from "../models/maze";
 
 interface ControlPanelProps {
-  onGenerate: (newMaze: Maze) => void;
+  onGenerateClick: (newMaze: Maze) => void;
 }
 
 const mazeCreatorFunctions = [
@@ -19,7 +19,7 @@ const mazeCreatorFunctions = [
   },
 ];
 
-function ControlPanel({ onGenerate }: ControlPanelProps): ReactElement {
+function ControlPanel({ onGenerateClick }: ControlPanelProps): ReactElement {
   const [height, setHeight] = useState(10);
   const [width, setWidth] = useState(10);
   const [creatorFunctionIndex, setCreatorFunctionIndex] = useState(0);
@@ -33,12 +33,11 @@ function ControlPanel({ onGenerate }: ControlPanelProps): ReactElement {
       width,
       height,
     );
-    onGenerate(newMaze);
+    onGenerateClick(newMaze);
   };
 
   return (
     <>
-      <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
       <div className="menu">
         <table>
           <tbody>
@@ -66,14 +65,7 @@ function ControlPanel({ onGenerate }: ControlPanelProps): ReactElement {
             </tr>
           </tbody>
         </table>
-        <div
-          style={{
-            padding: "20px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <div className="container" style={{ paddingTop: "25px" }}>
           <button onClick={handleClick}>Generate Maze</button>
         </div>
       </div>

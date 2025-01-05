@@ -2,21 +2,40 @@ import { useState } from "react";
 import "./App.css";
 import Visualizer from "./components/Visualizer";
 import ControlPanel from "./components/ControlPanel";
-import { Maze } from "./models/maze";
+import Maze from "./models/maze";
 
 function App() {
   const [maze, setMaze] = useState<Maze | null>();
+  const [showSolution, setShowSolution] = useState<boolean>(false);
+
+  const handleToggle = () => {
+    console.log("toggle!");
+    setShowSolution(!showSolution);
+  };
 
   return (
     <>
-      <ControlPanel onGenerate={setMaze} />
+      <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
+      <div className="container">
+        <ControlPanel onGenerateClick={setMaze} />
+      </div>
       {maze ? (
-        <Visualizer maze={maze} />
+        <>
+          <div className="container" style={{ padding: "25px" }}>
+            Show Solution?
+            <input
+              type="checkbox"
+              onChange={handleToggle}
+              style={{ marginLeft: "10px" }}
+            />
+          </div>
+          <Visualizer maze={maze} showSolution={showSolution} />
+        </>
       ) : (
-        <div style={{ textAlign: "center", height: "100vh" }}>
-          <span className="menu">
+        <div className="container">
+          <div className="menu">
             Please use the controls above to generate a maze.
-          </span>
+          </div>
         </div>
       )}
 
