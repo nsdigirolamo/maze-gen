@@ -25,7 +25,7 @@ function ControlPanel({
               <label>Width</label>
             </td>
             <td>
-              <input type="number" min={1} max={1000} {...register("width")} />
+              <input type="number" min={1} {...register("width")} />
             </td>
           </tr>
           <tr>
@@ -33,7 +33,7 @@ function ControlPanel({
               <label>Height</label>
             </td>
             <td>
-              <input type="number" min={1} max={1000} {...register("height")} />
+              <input type="number" min={1} {...register("height")} />
             </td>
           </tr>
           <tr>
