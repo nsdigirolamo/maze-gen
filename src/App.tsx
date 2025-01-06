@@ -45,8 +45,10 @@ function App() {
         </>
       ) : (
         <div className="container">
-          <div className="menu">
-            Please use the controls above to generate a maze.
+          <div className="menu" style={{ textAlign: "center" }}>
+            Use the controls above to generate a maze.
+            <br />
+            Large mazes may take a few minutes to generate and solve.
           </div>
         </div>
       )}
