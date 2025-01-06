@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { useForm } from "react-hook-form";
-import MAZE_CREATORS from "../models/maze-creators";
 import ControlPanelData from "../models/control-panel-data";
+import MAZE_CREATORS from "../constants/maze-creators";
 
 interface ControlPanelProps {
   defaultData: ControlPanelData;

@@ -3,10 +3,9 @@ import "./App.css";
 import Visualizer from "./components/Visualizer";
 import ControlPanel from "./components/ControlPanel";
 import Maze from "./models/maze";
-import ControlPanelData, {
-  defaultControlPanelData,
-} from "./models/control-panel-data";
-import MAZE_CREATORS from "./models/maze-creators";
+import MAZE_CREATORS from "./constants/maze-creators";
+import ControlPanelData from "./models/control-panel-data";
+import DEFAULT_CONTROL_PANEL_DATA from "./constants/control-panel-data";
 
 function App() {
   const [maze, setMaze] = useState<Maze | null>();
@@ -27,7 +26,7 @@ function App() {
       <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
       <div className="container">
         <ControlPanel
-          defaultData={defaultControlPanelData}
+          defaultData={DEFAULT_CONTROL_PANEL_DATA}
           onSubmit={handleControlPanelSubmit}
         />
       </div>
