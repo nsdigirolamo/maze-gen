@@ -6,15 +6,32 @@ import Maze from "./models/maze";
 import MAZE_CREATORS from "./constants/maze-creators";
 import ControlPanelData from "./models/control-panel-data";
 import DEFAULT_CONTROL_PANEL_DATA from "./constants/control-panel-data";
+import Coordinate from "./models/coordinate";
+
+const defaultStart: Coordinate = {
+  row: DEFAULT_CONTROL_PANEL_DATA.startRow,
+  col: DEFAULT_CONTROL_PANEL_DATA.startColumn,
+};
+const defaultEnd: Coordinate = {
+  row: DEFAULT_CONTROL_PANEL_DATA.endRow,
+  col: DEFAULT_CONTROL_PANEL_DATA.endColumn,
+};
 
 function App() {
   const [maze, setMaze] = useState<Maze | null>();
+  const [start, setStart] = useState<Coordinate>(defaultStart);
+  const [end, setEnd] = useState<Coordinate>(defaultEnd);
   const [showSolution, setShowSolution] = useState<boolean>(false);
 
   const handleControlPanelSubmit = (data: ControlPanelData) => {
     const mazeCreator = MAZE_CREATORS[data.mazeCreatorIndex].function;
-    const newMaze = mazeCreator(data.width, data.height);
+    const newMaze: Maze = mazeCreator(data.width, data.height);
+    const newStart: Coordinate = { row: data.startRow, col: data.startColumn };
+    const newEnd: Coordinate = { row: data.endRow, col: data.endColumn };
+
     setMaze(newMaze);
+    setStart(newStart);
+    setEnd(newEnd);
   };
 
   const handleShowSolutionToggle = () => {
@@ -40,7 +57,12 @@ function App() {
               style={{ marginLeft: "10px" }}
             />
           </div>
-          <Visualizer maze={maze} showSolution={showSolution} />
+          <Visualizer
+            maze={maze}
+            showSolution={showSolution}
+            start={start}
+            end={end}
+          />
         </>
       ) : (
         <div className="container">

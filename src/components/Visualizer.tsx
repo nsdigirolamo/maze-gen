@@ -1,14 +1,21 @@
 import { ReactElement, useEffect, useRef } from "react";
-import { getCellAtCoordinate, solveMaze } from "../logic/maze";
+import { solveMaze } from "../logic/maze";
 import Maze from "../models/maze";
 import Coordinate from "../models/coordinate";
 
 interface VisualizerProps {
   maze: Maze;
+  start: Coordinate;
+  end: Coordinate;
   showSolution?: boolean;
 }
 
-function Visualizer({ maze, showSolution }: VisualizerProps): ReactElement {
+function Visualizer({
+  maze,
+  start,
+  end,
+  showSolution,
+}: VisualizerProps): ReactElement {
   const cellSize = 25;
   const mazeWidth = maze[0].length;
   const mazeHeight = maze.length;
@@ -30,20 +37,13 @@ function Visualizer({ maze, showSolution }: VisualizerProps): ReactElement {
 
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    const start = { row: 0, col: Math.floor(mazeWidth / 2.0) };
-    const end = { row: mazeHeight - 1, col: Math.floor(mazeWidth / 2.0) };
-
     if (showSolution) {
       drawSolution(context, solveMaze(maze, start, end), cellSize, padding);
     }
 
-    getCellAtCoordinate(maze, start).walls.top = false;
-    getCellAtCoordinate(maze, end).walls.bottom = false;
-
     drawWalls(context, maze, cellSize, padding);
-
-    getCellAtCoordinate(maze, start).walls.top = true;
-    getCellAtCoordinate(maze, end).walls.bottom = true;
+    drawMarker(context, start, cellSize, padding, "green");
+    drawMarker(context, end, cellSize, padding, "red");
   }, [maze, showSolution]);
 
   return (
@@ -112,19 +112,37 @@ function drawSolution(
 
   for (let index = 0; index < solution.length - 1; index++) {
     const current = solution[index];
-    const currentX = current.col * cellSize + padding;
-    const currentY = current.row * cellSize + padding;
+    const currentX = current.col * cellSize + padding + cellSize / 2.0;
+    const currentY = current.row * cellSize + padding + cellSize / 2.0;
 
     const next = solution[index + 1];
-    const nextX = next.col * cellSize + padding;
-    const nextY = next.row * cellSize + padding;
+    const nextX = next.col * cellSize + padding + cellSize / 2.0;
+    const nextY = next.row * cellSize + padding + cellSize / 2.0;
 
-    context.moveTo(currentX + cellSize / 2.0, currentY + cellSize / 2.0);
-    context.lineTo(nextX + cellSize / 2.0, nextY + cellSize / 2.0);
+    context.moveTo(currentX, currentY);
+    context.lineTo(nextX, nextY);
   }
 
   context.closePath();
   context.stroke();
+}
+
+function drawMarker(
+  context: CanvasRenderingContext2D,
+  coordinate: Coordinate,
+  cellSize: number,
+  padding: number,
+  fillStyle: string,
+) {
+  context.fillStyle = fillStyle;
+  context.beginPath();
+
+  const x = coordinate.col * cellSize + padding + cellSize / 2.0;
+  const y = coordinate.row * cellSize + padding + cellSize / 2.0;
+  context.arc(x, y, cellSize / 4.0, 0, 2 * Math.PI);
+
+  context.closePath();
+  context.fill();
 }
 
 export default Visualizer;
