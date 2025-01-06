@@ -2,6 +2,12 @@ body {
   font-family: sans-serif;
 }
 
+footer {
+  text-align: center;
+  margin: 50vh 0 2vh 0;
+  font-size: 0.75rem;
+}
+
 .container,
 .row {
   height: 100%;
@@ -24,11 +30,12 @@ body {
   display: inline-block;
 }
 
-.menu .label {
-  width: 10vw;
+.menu label {
+  display: inline-block;
+  width: 100px;
 }
 
 .menu input {
-  width: 75px;
+  width: 125px;
   margin-right: 10px;
 }

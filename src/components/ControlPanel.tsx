@@ -1,75 +1,61 @@
-import { ReactElement, useState } from "react";
-import NumberSelectorTr from "./NumberSelectorTr";
-import { createIterativeBacktrackingMaze } from "../logic/iterativeBacktracking";
-import { createKruskalsMaze } from "../logic/kruskals";
-import Maze from "../models/maze";
+import { ReactElement } from "react";
+import { useForm } from "react-hook-form";
+import MAZE_CREATORS from "../models/maze-creators";
+import ControlPanelData from "../models/control-panel-data";
 
 interface ControlPanelProps {
-  onGenerateClick: (newMaze: Maze) => void;
+  defaultData: ControlPanelData;
+  onSubmit: (data: ControlPanelData) => void;
 }
 
-const mazeCreatorFunctions = [
-  {
-    name: "Backtracking",
-    creator: createIterativeBacktrackingMaze,
-  },
-  {
-    name: "Kruskal's",
-    creator: createKruskalsMaze,
-  },
-];
-
-function ControlPanel({ onGenerateClick }: ControlPanelProps): ReactElement {
-  const [height, setHeight] = useState(10);
-  const [width, setWidth] = useState(10);
-  const [creatorFunctionIndex, setCreatorFunctionIndex] = useState(0);
-
-  const handleSelect = (newValue: number) => {
-    setCreatorFunctionIndex(newValue);
-  };
-
-  const handleClick = () => {
-    const newMaze = mazeCreatorFunctions[creatorFunctionIndex].creator(
-      width,
-      height,
-    );
-    onGenerateClick(newMaze);
-  };
+function ControlPanel({
+  onSubmit,
+  defaultData,
+}: ControlPanelProps): ReactElement {
+  const { register, handleSubmit } = useForm<ControlPanelData>({
+    defaultValues: defaultData,
+  });
 
   return (
-    <>
-      <div className="menu">
-        <table>
-          <tbody>
-            <NumberSelectorTr
-              label="Width"
-              initialValue={width}
-              onChange={setWidth}
-            />
-            <NumberSelectorTr
-              label="Height"
-              initialValue={height}
-              onChange={setHeight}
-            />
-            <tr>
-              <td className="label">Algorithm</td>
-              <td>
-                <select onChange={(event) => handleSelect(+event.target.value)}>
-                  {mazeCreatorFunctions.map((element, index) => (
-                    <option value={index} key={index}>
-                      {element.name}
-                    </option>
-                  ))}
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div className="container" style={{ paddingTop: "25px" }}>
-          <button onClick={handleClick}>Generate Maze</button>
-        </div>
+    <form className="menu" onSubmit={handleSubmit((data) => onSubmit(data))}>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <label>Width</label>
+            </td>
+            <td>
+              <input type="number" min={1} max={1000} {...register("width")} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label>Height</label>
+            </td>
+            <td>
+              <input type="number" min={1} max={1000} {...register("height")} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label>Algorithm</label>
+            </td>
+            <td>
+              <select {...register("mazeCreatorIndex")}>
+                {MAZE_CREATORS.map((element, index) => (
+                  <option value={index} key={index}>
+                    {element.name}
+                  </option>
+                ))}
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div className="container" style={{ paddingTop: "25px" }}>
+        <button type="submit">Generate Maze</button>
       </div>
-    </>
+    </form>
   );
 }
 

@@ -3,12 +3,22 @@ import "./App.css";
 import Visualizer from "./components/Visualizer";
 import ControlPanel from "./components/ControlPanel";
 import Maze from "./models/maze";
+import ControlPanelData, {
+  defaultControlPanelData,
+} from "./models/control-panel-data";
+import MAZE_CREATORS from "./models/maze-creators";
 
 function App() {
   const [maze, setMaze] = useState<Maze | null>();
   const [showSolution, setShowSolution] = useState<boolean>(false);
 
-  const handleToggle = () => {
+  const handleControlPanelSubmit = (data: ControlPanelData) => {
+    const mazeCreator = MAZE_CREATORS[data.mazeCreatorIndex].function;
+    const newMaze = mazeCreator(data.width, data.height);
+    setMaze(newMaze);
+  };
+
+  const handleShowSolutionToggle = () => {
     setShowSolution(!showSolution);
   };
 
@@ -16,7 +26,10 @@ function App() {
     <>
       <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
       <div className="container">
-        <ControlPanel onGenerateClick={setMaze} />
+        <ControlPanel
+          defaultData={defaultControlPanelData}
+          onSubmit={handleControlPanelSubmit}
+        />
       </div>
       {maze ? (
         <>
@@ -24,7 +37,7 @@ function App() {
             Show Solution?
             <input
               type="checkbox"
-              onChange={handleToggle}
+              onChange={handleShowSolutionToggle}
               style={{ marginLeft: "10px" }}
             />
           </div>
@@ -38,13 +51,7 @@ function App() {
         </div>
       )}
 
-      <footer
-        style={{
-          textAlign: "center",
-          margin: "50vh 0 2vh 0",
-          fontSize: "0.75rem",
-        }}
-      >
+      <footer>
         Copyright © 2025 -{" "}
         <a href="https://nsdigirolamo.com">Nicholas DiGirolamo</a>
       </footer>
