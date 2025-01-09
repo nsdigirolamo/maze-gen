@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useRef } from "react";
-import { getCellAtCoordinate, solveMaze } from "../logic/maze";
+import { solveMaze } from "../logic/maze";
 import Maze from "../models/maze";
 import Coordinate from "../models/coordinate";
 
@@ -37,13 +37,7 @@ function Visualizer({ maze, showSolution }: VisualizerProps): ReactElement {
       drawSolution(context, solveMaze(maze, start, end), cellSize, padding);
     }
 
-    getCellAtCoordinate(maze, start).walls.top = false;
-    getCellAtCoordinate(maze, end).walls.bottom = false;
-
     drawWalls(context, maze, cellSize, padding);
-
-    getCellAtCoordinate(maze, start).walls.top = true;
-    getCellAtCoordinate(maze, end).walls.bottom = true;
   }, [maze, showSolution]);
 
   return (

@@ -1,56 +1,105 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import Visualizer from "./components/Visualizer";
-import ControlPanel from "./components/ControlPanel";
 import Maze from "./models/maze";
 import MAZE_CREATORS from "./constants/maze-creators";
-import ControlPanelData from "./models/control-panel-data";
-import { Col, Container, Row } from "react-bootstrap";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Container,
+  Form,
+  Row,
+  ToggleButton,
+} from "react-bootstrap";
+import DEFAULT_CONTROL_PANEL_DATA from "./constants/control-panel-data";
+import { useFormik } from "formik";
 
 function App() {
   const [maze, setMaze] = useState<Maze | null>();
   const [showSolution, setShowSolution] = useState<boolean>(false);
 
-  const handleControlPanelSubmit = (data: ControlPanelData) => {
-    console.log(data);
-    const mazeCreator = MAZE_CREATORS[data.mazeCreatorIndex].function;
-    const newMaze: Maze = mazeCreator(data.width, data.height);
-    setMaze(newMaze);
-  };
-
-  const handleShowSolutionToggle = () => {
-    setShowSolution(!showSolution);
-  };
+  const formik = useFormik({
+    initialValues: DEFAULT_CONTROL_PANEL_DATA,
+    onSubmit: (values) => {
+      console.log(values);
+      const mazeCreator = MAZE_CREATORS[values.mazeCreatorIndex].function;
+      const newMaze: Maze = mazeCreator(values.width, values.height);
+      setMaze(newMaze);
+    },
+  });
 
   return (
     <>
       <h1 className="text-center my-4">Minecraft Maze Generator</h1>
-      <Container style={{ minHeight: "100vh" }}>
-        <Row className="mb-5">
-          <Col md={{ span: 6, offset: 3 }}>
-            <ControlPanel onSubmit={handleControlPanelSubmit} />
-          </Col>
-        </Row>
-        <Row className="mb-5">
-          <Col className="text-center">
-            {maze ? (
-              <>
-                <Row>
-                  <Col>
-                    <span>Show Solution?</span>
-                    <input
-                      className="mx-2"
-                      type="checkbox"
-                      onChange={handleShowSolutionToggle}
+      <Container className="mx-4">
+        <Row>
+          <Col sm={4} style={{ height: "100%" }}>
+            <Row>
+              <Form onSubmit={formik.handleSubmit}>
+                <Row className="mb-3">
+                  <Form.Group as={Col}>
+                    <Form.Label>Width</Form.Label>
+                    <Form.Control
+                      id="width"
+                      type="number"
+                      {...formik.getFieldProps("width")}
+                      min={1}
                     />
-                  </Col>
+                  </Form.Group>
+                  <Form.Group as={Col}>
+                    <Form.Label>Height</Form.Label>
+                    <Form.Control
+                      id="height"
+                      type="number"
+                      {...formik.getFieldProps("height")}
+                      min={1}
+                    />
+                  </Form.Group>
                 </Row>
-                <Row>
-                  <Col>
-                    <Visualizer maze={maze} showSolution={showSolution} />
-                  </Col>
+                <Row className="mb-3">
+                  <Form.Group as={Col}>
+                    <Form.Label>Algorithm</Form.Label>
+                    <Form.Select
+                      id="mazeCreatorIndex"
+                      {...formik.getFieldProps("mazeCreatorIndex")}
+                    >
+                      {MAZE_CREATORS.map((element, index) => (
+                        <option value={index} key={index}>
+                          {element.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
                 </Row>
-              </>
+                <Button variant="primary" type="submit">
+                  Generate Maze
+                </Button>
+                <ButtonGroup className="mx-3">
+                  {maze ? (
+                    <ToggleButton
+                      id="toggle-check"
+                      type="checkbox"
+                      variant="outline-secondary"
+                      checked={showSolution}
+                      value="1"
+                      onChange={(e) => setShowSolution(e.currentTarget.checked)}
+                    >
+                      {showSolution ? "Hide Solution" : "Show Solution"}
+                    </ToggleButton>
+                  ) : null}
+                </ButtonGroup>
+              </Form>
+            </Row>
+          </Col>
+          <Col
+            sm={8}
+            className="d-flex"
+            style={{ minHeight: "80vh" }}
+            fluid={true}
+          >
+            {maze ? (
+              <Visualizer maze={maze} showSolution={showSolution} />
             ) : (
               <>
                 Use the controls above to generate a maze.
@@ -61,10 +110,6 @@ function App() {
           </Col>
         </Row>
       </Container>
-      <footer className="text-center text-muted mx-auto my-4">
-        Copyright © 2025 -{" "}
-        <a href="https://nsdigirolamo.com">Nicholas DiGirolamo</a>
-      </footer>
     </>
   );
 }
