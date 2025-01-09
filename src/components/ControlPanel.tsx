@@ -24,10 +24,8 @@ function ControlPanel({ onSubmit }: ControlPanelProps): ReactElement {
           <Form.Label>Width</Form.Label>
           <Form.Control
             id="width"
-            name="width"
             type="number"
-            onChange={formik.handleChange}
-            value={formik.values.width}
+            {...formik.getFieldProps("width")}
             min={1}
           />
         </Form.Group>
@@ -35,10 +33,8 @@ function ControlPanel({ onSubmit }: ControlPanelProps): ReactElement {
           <Form.Label>Height</Form.Label>
           <Form.Control
             id="height"
-            name="height"
             type="number"
-            onChange={formik.handleChange}
-            value={formik.values.height}
+            {...formik.getFieldProps("height")}
             min={1}
           />
         </Form.Group>
@@ -48,9 +44,7 @@ function ControlPanel({ onSubmit }: ControlPanelProps): ReactElement {
           <Form.Label>Algorithm</Form.Label>
           <Form.Select
             id="mazeCreatorIndex"
-            name="mazeCreatorIndex"
-            onChange={formik.handleChange}
-            value={formik.values.mazeCreatorIndex}
+            {...formik.getFieldProps("mazeCreatorIndex")}
           >
             {MAZE_CREATORS.map((element, index) => (
               <option value={index} key={index}>
