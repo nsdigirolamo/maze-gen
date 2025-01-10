@@ -1,83 +1,45 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
-import "./App.css";
 import Visualizer from "./components/Visualizer";
-import ControlPanel from "./components/ControlPanel";
 import Maze from "./models/maze";
 import MAZE_CREATORS from "./constants/maze-creators";
-import ControlPanelData from "./models/control-panel-data";
-import DEFAULT_CONTROL_PANEL_DATA from "./constants/control-panel-data";
-import Coordinate from "./models/coordinate";
-
-const defaultStart: Coordinate = {
-  row: DEFAULT_CONTROL_PANEL_DATA.startRow,
-  col: DEFAULT_CONTROL_PANEL_DATA.startColumn,
-};
-const defaultEnd: Coordinate = {
-  row: DEFAULT_CONTROL_PANEL_DATA.endRow,
-  col: DEFAULT_CONTROL_PANEL_DATA.endColumn,
-};
+import { Col, Container, Row } from "react-bootstrap";
+import MazeForm from "./components/MazeForm";
+import MazeFormValues from "./models/maze-form-values";
 
 function App() {
-  const [maze, setMaze] = useState<Maze | null>();
-  const [start, setStart] = useState<Coordinate>(defaultStart);
-  const [end, setEnd] = useState<Coordinate>(defaultEnd);
   const [showSolution, setShowSolution] = useState<boolean>(false);
+  const [maze, setMaze] = useState<Maze | null>();
 
-  const handleControlPanelSubmit = (data: ControlPanelData) => {
-    const mazeCreator = MAZE_CREATORS[data.mazeCreatorIndex].function;
-    const newMaze: Maze = mazeCreator(data.width, data.height);
-    const newStart: Coordinate = { row: data.startRow, col: data.startColumn };
-    const newEnd: Coordinate = { row: data.endRow, col: data.endColumn };
-
+  const onMazeFormSubmit = (values: MazeFormValues) => {
+    const creatorFunction = MAZE_CREATORS[values.mazeCreatorIndex].function;
+    const newMaze = creatorFunction(values.width, values.height);
     setMaze(newMaze);
-    setStart(newStart);
-    setEnd(newEnd);
-  };
-
-  const handleShowSolutionToggle = () => {
-    setShowSolution(!showSolution);
   };
 
   return (
     <>
-      <h1 style={{ textAlign: "center" }}>Maze Generator</h1>
-      <div className="container">
-        <ControlPanel
-          defaultData={DEFAULT_CONTROL_PANEL_DATA}
-          onSubmit={handleControlPanelSubmit}
-        />
-      </div>
-      {maze ? (
-        <>
-          <div className="container" style={{ padding: "25px" }}>
-            Show Solution?
-            <input
-              type="checkbox"
-              onChange={handleShowSolutionToggle}
-              style={{ marginLeft: "10px" }}
+      <h1 className="text-center my-4">Minecraft Maze Generator</h1>
+      <Container className="mx-4">
+        <Row>
+          <Col>
+            <MazeForm
+              onSubmit={onMazeFormSubmit}
+              onShowSolution={setShowSolution}
             />
-          </div>
-          <Visualizer
-            maze={maze}
-            showSolution={showSolution}
-            start={start}
-            end={end}
-          />
-        </>
-      ) : (
-        <div className="container">
-          <div className="menu" style={{ textAlign: "center" }}>
-            Use the controls above to generate a maze.
-            <br />
-            Large mazes may take a few minutes to generate and solve.
-          </div>
-        </div>
-      )}
-
-      <footer>
-        Copyright © 2025 -{" "}
-        <a href="https://nsdigirolamo.com">Nicholas DiGirolamo</a>
-      </footer>
+            <div className="text-center my-5">
+              Use the controls above to generate a maze.
+              <br />
+              Large mazes may take a few minutes to generate and solve.
+            </div>
+          </Col>
+          <Col sm={8}>
+            {maze ? (
+              <Visualizer maze={maze} showSolution={showSolution} />
+            ) : null}
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }

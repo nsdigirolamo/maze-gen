@@ -5,17 +5,10 @@ import Coordinate from "../models/coordinate";
 
 interface VisualizerProps {
   maze: Maze;
-  start: Coordinate;
-  end: Coordinate;
   showSolution?: boolean;
 }
 
-function Visualizer({
-  maze,
-  start,
-  end,
-  showSolution,
-}: VisualizerProps): ReactElement {
+function Visualizer({ maze, showSolution }: VisualizerProps): ReactElement {
   const cellSize = 25;
   const mazeWidth = maze[0].length;
   const mazeHeight = maze.length;
@@ -24,6 +17,9 @@ function Visualizer({
   const padding = 10;
   const canvasWidth = 2 * padding + mazeWidth * cellSize;
   const canvasHeight = 2 * padding + mazeHeight * cellSize;
+
+  const start: Coordinate = { row: 0, col: 0 };
+  const end: Coordinate = { row: mazeHeight - 1, col: mazeWidth - 1 };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,8 +38,6 @@ function Visualizer({
     }
 
     drawWalls(context, maze, cellSize, padding);
-    drawMarker(context, start, cellSize, padding, "green");
-    drawMarker(context, end, cellSize, padding, "red");
   }, [maze, showSolution]);
 
   return (
@@ -125,24 +119,6 @@ function drawSolution(
 
   context.closePath();
   context.stroke();
-}
-
-function drawMarker(
-  context: CanvasRenderingContext2D,
-  coordinate: Coordinate,
-  cellSize: number,
-  padding: number,
-  fillStyle: string,
-) {
-  context.fillStyle = fillStyle;
-  context.beginPath();
-
-  const x = coordinate.col * cellSize + padding + cellSize / 2.0;
-  const y = coordinate.row * cellSize + padding + cellSize / 2.0;
-  context.arc(x, y, cellSize / 4.0, 0, 2 * Math.PI);
-
-  context.closePath();
-  context.fill();
 }
 
 export default Visualizer;
