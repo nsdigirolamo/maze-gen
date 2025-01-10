@@ -5,7 +5,7 @@ import Maze from "./models/maze";
 import MAZE_CREATORS from "./constants/maze-creators";
 import { Col, Container, Row } from "react-bootstrap";
 import MazeForm from "./components/MazeForm";
-import MazeFormValues from "./models/control-panel-data";
+import MazeFormValues from "./models/maze-form-values";
 
 function App() {
   const [showSolution, setShowSolution] = useState<boolean>(false);

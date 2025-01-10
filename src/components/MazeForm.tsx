@@ -1,5 +1,5 @@
 import { ReactElement, useState } from "react";
-import MazeFormValues from "../models/control-panel-data";
+import MazeFormValues from "../models/maze-form-values";
 import { Button, Form, Row, ToggleButton } from "react-bootstrap";
 import { useFormik } from "formik";
 import MAZE_CREATORS from "../constants/maze-creators";
