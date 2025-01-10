@@ -43,14 +43,7 @@ function Visualizer({ maze, showSolution }: VisualizerProps): ReactElement {
   return (
     <canvas
       ref={canvasRef}
-      style={{
-        marginLeft: "auto",
-        marginRight: "auto",
-        display: "block",
-        padding: "25px",
-        height: canvasHeight,
-        width: canvasWidth,
-      }}
+      style={{ height: canvasHeight, width: canvasWidth }}
     />
   );
 }
