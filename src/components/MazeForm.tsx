@@ -55,7 +55,7 @@ const MazeForm = () => {
         <div className="text-center my-5">
           Use the controls above and below to generate the maze.
           <br />
-          Large mazes may take a few minutes to generate and solve.
+          Large mazes may take some time to generate.
         </div>
       </Row>
       <Row className="mb-3">
