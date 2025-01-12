@@ -5,18 +5,25 @@ import Coordinate from "../models/coordinate";
 
 interface VisualizerProps {
   maze: Maze;
+  corridorWidth?: number;
+  wallWidth?: number;
   showSolution?: boolean;
 }
 
-function Visualizer({ maze, showSolution }: VisualizerProps): ReactElement {
+function Visualizer({
+  maze,
+  corridorWidth,
+  wallWidth,
+  showSolution,
+}: VisualizerProps): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const mazeWidth = maze[0].length;
   const mazeHeight = maze.length;
 
   const padding = 10;
-  const cellSize = 25;
-  const wallSize = 25;
+  const cellSize = corridorWidth ? corridorWidth : 25;
+  const wallSize = wallWidth ? wallWidth : 10;
 
   const canvasWidth =
     2 * padding + (mazeWidth + 1) * wallSize + mazeWidth * cellSize;
@@ -40,6 +47,7 @@ function Visualizer({ maze, showSolution }: VisualizerProps): ReactElement {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     drawWalls(context, maze, padding, cellSize, wallSize);
+    drawPadding(context, padding);
 
     if (showSolution) {
       drawSolution(
@@ -138,6 +146,17 @@ function drawSolution(
 
   context.closePath();
   context.stroke();
+}
+
+function drawPadding(context: CanvasRenderingContext2D, padding: number) {
+  const width = context.canvas.width;
+  const height = context.canvas.height;
+  context.fillStyle = "white";
+
+  context.fillRect(0, 0, width, padding);
+  context.fillRect(0, 0, padding, width);
+  context.fillRect(width - padding, 0, padding, height);
+  context.fillRect(0, height - padding, width, padding);
 }
 
 export default Visualizer;
