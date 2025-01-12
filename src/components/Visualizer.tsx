@@ -5,14 +5,14 @@ import Coordinate from "../models/coordinate";
 
 interface VisualizerProps {
   maze: Maze;
-  corridorWidth?: number;
-  wallWidth?: number;
+  cellWidth: number;
+  wallWidth: number;
   showSolution?: boolean;
 }
 
 function Visualizer({
   maze,
-  corridorWidth,
+  cellWidth,
   wallWidth,
   showSolution,
 }: VisualizerProps): ReactElement {
@@ -22,13 +22,10 @@ function Visualizer({
   const mazeHeight = maze.length;
 
   const padding = 10;
-  const cellSize = corridorWidth ? corridorWidth : 25;
-  const wallSize = wallWidth ? wallWidth : 10;
-
   const canvasWidth =
-    2 * padding + (mazeWidth + 1) * wallSize + mazeWidth * cellSize;
+    2 * padding + (mazeWidth + 1) * wallWidth + mazeWidth * cellWidth;
   const canvasHeight =
-    2 * padding + (mazeHeight + 1) * wallSize + mazeHeight * cellSize;
+    2 * padding + (mazeHeight + 1) * wallWidth + mazeHeight * cellWidth;
 
   const start: Coordinate = { row: 0, col: 0 };
   const end: Coordinate = { row: mazeHeight - 1, col: mazeWidth - 1 };
@@ -46,7 +43,7 @@ function Visualizer({
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    drawWalls(context, maze, padding, cellSize, wallSize);
+    drawWalls(context, maze, padding, cellWidth, wallWidth);
     drawPadding(context, padding);
 
     if (showSolution) {
@@ -54,11 +51,11 @@ function Visualizer({
         context,
         solveMaze(maze, start, end),
         padding,
-        cellSize,
-        wallSize,
+        cellWidth,
+        wallWidth,
       );
     }
-  }, [maze, showSolution]);
+  }, [maze, showSolution, cellWidth, wallWidth]);
 
   return (
     <canvas
@@ -72,8 +69,8 @@ function drawWalls(
   context: CanvasRenderingContext2D,
   maze: Maze,
   padding: number,
-  cellSize: number,
-  wallSize: number,
+  cellWidth: number,
+  wallWidth: number,
 ) {
   context.fillStyle = "white";
 
@@ -81,30 +78,30 @@ function drawWalls(
     for (let col = 0; col < maze[0].length; col++) {
       const cell = maze[row][col];
 
-      const x = padding + (1 + col) * wallSize + col * cellSize;
-      const y = padding + (1 + row) * wallSize + row * cellSize;
+      const x = padding + (1 + col) * wallWidth + col * cellWidth;
+      const y = padding + (1 + row) * wallWidth + row * cellWidth;
 
-      context.fillRect(x, y, cellSize, cellSize);
+      context.fillRect(x, y, cellWidth, cellWidth);
 
       if (!cell.walls.top) {
         const wallX = x;
-        const wallY = y - wallSize;
-        context.fillRect(wallX, wallY, cellSize, wallSize);
+        const wallY = y - wallWidth;
+        context.fillRect(wallX, wallY, cellWidth, wallWidth);
       }
       if (!cell.walls.right) {
-        const wallX = x + cellSize;
+        const wallX = x + cellWidth;
         const wallY = y;
-        context.fillRect(wallX, wallY, wallSize, cellSize);
+        context.fillRect(wallX, wallY, wallWidth, cellWidth);
       }
       if (!cell.walls.bottom) {
         const wallX = x;
-        const wallY = y + cellSize;
-        context.fillRect(wallX, wallY, cellSize, wallSize);
+        const wallY = y + cellWidth;
+        context.fillRect(wallX, wallY, cellWidth, wallWidth);
       }
       if (!cell.walls.left) {
-        const wallX = x - wallSize;
+        const wallX = x - wallWidth;
         const wallY = y;
-        context.fillRect(wallX, wallY, wallSize, cellSize);
+        context.fillRect(wallX, wallY, wallWidth, cellWidth);
       }
     }
   }
@@ -114,8 +111,8 @@ function drawSolution(
   context: CanvasRenderingContext2D,
   solution: Coordinate[],
   padding: number,
-  cellSize: number,
-  wallSize: number,
+  cellWidth: number,
+  wallWidth: number,
 ) {
   context.strokeStyle = "red";
   context.lineWidth = 3;
@@ -127,18 +124,24 @@ function drawSolution(
     const col = current.col;
 
     const currentX =
-      padding + (1 + col) * wallSize + col * cellSize + cellSize / 2.0;
+      padding + (1 + col) * wallWidth + col * cellWidth + cellWidth / 2.0;
     const currentY =
-      padding + (1 + row) * wallSize + row * cellSize + cellSize / 2.0;
+      padding + (1 + row) * wallWidth + row * cellWidth + cellWidth / 2.0;
 
     const next = solution[index + 1];
     const nextRow = next.row;
     const nextCol = next.col;
 
     const nextX =
-      padding + (1 + nextCol) * wallSize + nextCol * cellSize + cellSize / 2.0;
+      padding +
+      (1 + nextCol) * wallWidth +
+      nextCol * cellWidth +
+      cellWidth / 2.0;
     const nextY =
-      padding + (1 + nextRow) * wallSize + nextRow * cellSize + cellSize / 2.0;
+      padding +
+      (1 + nextRow) * wallWidth +
+      nextRow * cellWidth +
+      cellWidth / 2.0;
 
     context.moveTo(currentX, currentY);
     context.lineTo(nextX, nextY);

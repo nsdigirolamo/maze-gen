@@ -9,6 +9,8 @@ import MazeFormValues from "./models/maze-form-values";
 
 function App() {
   const [showSolution, setShowSolution] = useState<boolean>(false);
+  const [corridorWidth, setCorridorWidth] = useState<number>(10);
+  const [wallWidth, setWallWidth] = useState<number>(10);
   const [maze, setMaze] = useState<Maze | null>();
 
   const onMazeFormSubmit = (values: MazeFormValues) => {
@@ -25,17 +27,19 @@ function App() {
           <Col>
             <MazeForm
               onSubmit={onMazeFormSubmit}
+              onCorridorWidthChange={setCorridorWidth}
+              onWallWidthChange={setWallWidth}
               onShowSolution={setShowSolution}
             />
-            <div className="text-center my-5">
-              Use the controls above to generate a maze.
-              <br />
-              Large mazes may take a few minutes to generate and solve.
-            </div>
           </Col>
           <Col sm={8}>
             {maze ? (
-              <Visualizer maze={maze} showSolution={showSolution} />
+              <Visualizer
+                maze={maze}
+                cellWidth={corridorWidth}
+                wallWidth={wallWidth}
+                showSolution={showSolution}
+              />
             ) : null}
           </Col>
         </Row>
