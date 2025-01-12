@@ -1,6 +1,5 @@
 import { createIterativeBacktrackingMaze } from "../logic/iterativeBacktracking";
 import { createKruskalsMaze } from "../logic/kruskals";
-import { createMaze } from "../logic/maze";
 
 const MAZE_CREATORS = [
   {
@@ -10,10 +9,6 @@ const MAZE_CREATORS = [
   {
     name: "Kruskal's",
     function: createKruskalsMaze,
-  },
-  {
-    name: "The Anti Maze",
-    function: createMaze,
   },
 ];
 

@@ -6,9 +6,10 @@ import Visualizer from "../components/Visualizer";
 import Maze from "../models/maze";
 import MAZE_CREATORS from "../constants/maze-creators";
 import MazeFormValues from "../models/maze-form-values";
+import { exportToMcFunction } from "../logic/mcFunction";
 
 const Generator = () => {
-  const [maze, setMaze] = useState<Maze | null>();
+  const [maze, setMaze] = useState<Maze | null>(null);
 
   const initialValues: MazeFormValues = {
     width: 10,
@@ -18,19 +19,24 @@ const Generator = () => {
     corridorWidth: 10,
     wallWidth: 10,
   };
-  const onSubmit = (values: MazeFormValues) => {
+
+  const handleSubmit = (values: MazeFormValues) => {
     const creatorFunction = MAZE_CREATORS[values.mazeCreatorIndex].function;
     const newMaze = creatorFunction(values.width, values.height);
     setMaze(newMaze);
   };
 
+  const handleExport = () => {
+    if (maze !== null) exportToMcFunction(maze);
+  };
+
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {(formik) => {
         return (
           <Row>
             <Col>
-              <MazeForm />
+              <MazeForm onExportClick={handleExport} />
             </Col>
             <Col sm={8}>
               {maze ? (

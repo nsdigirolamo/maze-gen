@@ -5,7 +5,11 @@ import MAZE_CREATORS from "../constants/maze-creators";
 
 const sizeOptions = [10, 20, 30, 40, 50];
 
-const MazeForm = () => {
+interface MazeFormProps {
+  onExportClick: () => void;
+}
+
+const MazeForm = ({ onExportClick }: MazeFormProps) => {
   const { values, handleSubmit, getFieldProps, setFieldValue } =
     useFormikContext<MazeFormValues>();
 
@@ -78,6 +82,9 @@ const MazeForm = () => {
       </Row>
       <Row>
         <div>
+          <Button className="me-3" variant="primary" onClick={onExportClick}>
+            Export to File
+          </Button>
           <ToggleButton
             id="toggle-check"
             type="checkbox"
