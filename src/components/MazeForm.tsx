@@ -1,67 +1,23 @@
-import { ReactElement } from "react";
 import MazeFormValues from "../models/maze-form-values";
 import { Button, Form, Row, ToggleButton } from "react-bootstrap";
-import { useFormik } from "formik";
+import { useFormikContext } from "formik";
 import MAZE_CREATORS from "../constants/maze-creators";
-
-interface MazeFormProps {
-  onSubmit: (values: MazeFormValues) => void;
-  onCorridorWidthChange: (value: number) => void;
-  onWallWidthChange: (value: number) => void;
-  onShowSolution: (value: boolean) => void;
-}
 
 const sizeOptions = [10, 20, 30, 40, 50];
 
-function MazeForm({
-  onSubmit,
-  onCorridorWidthChange,
-  onWallWidthChange,
-  onShowSolution,
-}: MazeFormProps): ReactElement {
-  const formik = useFormik({
-    initialValues: {
-      width: 10,
-      height: 10,
-      mazeCreatorIndex: 0,
-      showSolution: false,
-      corridorWidth: 10,
-      wallWidth: 10,
-    },
-    onSubmit,
-  });
-
-  const handleShowSolutionClick = () => {
-    const newShowSolution = !formik.values.showSolution;
-    formik.setFieldValue("showSolution", newShowSolution);
-    onShowSolution(newShowSolution);
-  };
-
-  const handleCorridorWidthChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const newCorridorWidth = +event.target.value;
-    formik.setFieldValue("corridorWidth", newCorridorWidth);
-    onCorridorWidthChange(newCorridorWidth);
-  };
-
-  const handleWallWidthChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const newWallWidth = +event.target.value;
-    formik.setFieldValue("wallWidth", newWallWidth);
-    onWallWidthChange(newWallWidth);
-  };
+const MazeForm = () => {
+  const { values, handleSubmit, getFieldProps, setFieldValue } =
+    useFormikContext<MazeFormValues>();
 
   return (
-    <Form onSubmit={formik.handleSubmit}>
+    <Form onSubmit={handleSubmit}>
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Width</Form.Label>
           <Form.Control
             id="width"
             type="number"
-            {...formik.getFieldProps("width")}
+            {...getFieldProps("width")}
             min={1}
           />
         </Form.Group>
@@ -70,7 +26,7 @@ function MazeForm({
           <Form.Control
             id="height"
             type="number"
-            {...formik.getFieldProps("height")}
+            {...getFieldProps("height")}
             min={1}
           />
         </Form.Group>
@@ -80,7 +36,7 @@ function MazeForm({
           <Form.Label>Algorithm</Form.Label>
           <Form.Select
             id="mazeCreatorIndex"
-            {...formik.getFieldProps("mazeCreatorIndex")}
+            {...getFieldProps("mazeCreatorIndex")}
           >
             {MAZE_CREATORS.map((element, index) => (
               <option value={index} key={index} label={element.name} />
@@ -105,13 +61,7 @@ function MazeForm({
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Corridor Width</Form.Label>
-          <Form.Select
-            id="corridorWidth"
-            name="corridorWidth"
-            value={formik.values.corridorWidth}
-            onChange={handleCorridorWidthChange}
-            onBlur={formik.handleBlur}
-          >
+          <Form.Select id="corridorWidth" {...getFieldProps("corridorWidth")}>
             {sizeOptions.map((element, index) => (
               <option value={element} key={index} label={"" + element / 10} />
             ))}
@@ -119,13 +69,7 @@ function MazeForm({
         </Form.Group>
         <Form.Group className="col">
           <Form.Label>Wall Width</Form.Label>
-          <Form.Select
-            id="wallWidth"
-            name="wallWidth"
-            value={formik.values.wallWidth}
-            onChange={handleWallWidthChange}
-            onBlur={formik.handleBlur}
-          >
+          <Form.Select id="wallWidth" {...getFieldProps("wallWidth")}>
             {sizeOptions.map((element, index) => (
               <option value={element} key={index} label={"" + element / 10} />
             ))}
@@ -138,16 +82,16 @@ function MazeForm({
             id="toggle-check"
             type="checkbox"
             variant="outline-secondary"
-            checked={formik.values.showSolution}
+            checked={values.showSolution}
             value="1"
-            onClick={handleShowSolutionClick}
+            onClick={() => setFieldValue("showSolution", !values.showSolution)}
           >
-            {formik.values.showSolution ? "Hide Solution" : "Show Solution"}
+            {values.showSolution ? "Hide Solution" : "Show Solution"}
           </ToggleButton>
         </div>
       </Row>
     </Form>
   );
-}
+};
 
 export default MazeForm;
