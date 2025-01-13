@@ -3,7 +3,7 @@ import { Button, Form, Row, ToggleButton } from "react-bootstrap";
 import { useFormikContext } from "formik";
 import MAZE_CREATORS from "../constants/maze-creators";
 
-const sizeOptions = [10, 20, 30, 40, 50];
+const sizeOptions = [1, 2, 3, 4, 5];
 
 interface MazeFormProps {
   onExportClick: () => void;
@@ -67,7 +67,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           <Form.Label>Corridor Width</Form.Label>
           <Form.Select id="corridorWidth" {...getFieldProps("corridorWidth")}>
             {sizeOptions.map((element, index) => (
-              <option value={element} key={index} label={"" + element / 10} />
+              <option value={element} key={index} label={"" + element} />
             ))}
           </Form.Select>
         </Form.Group>
@@ -75,7 +75,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           <Form.Label>Wall Width</Form.Label>
           <Form.Select id="wallWidth" {...getFieldProps("wallWidth")}>
             {sizeOptions.map((element, index) => (
-              <option value={element} key={index} label={"" + element / 10} />
+              <option value={element} key={index} label={"" + element} />
             ))}
           </Form.Select>
         </Form.Group>

@@ -1,4 +1,4 @@
-import { Formik } from "formik";
+import { Formik, FormikProps } from "formik";
 import { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import MazeForm from "../components/MazeForm";
@@ -6,6 +6,7 @@ import Visualizer from "../components/Visualizer";
 import Maze from "../models/maze";
 import MAZE_CREATORS from "../constants/maze-creators";
 import MazeFormValues from "../models/maze-form-values";
+import { mazeToBlocks } from "../logic/maze";
 import { exportToMcFunction } from "../logic/mcFunction";
 
 const Generator = () => {
@@ -16,8 +17,8 @@ const Generator = () => {
     height: 10,
     mazeCreatorIndex: 0,
     showSolution: false,
-    corridorWidth: 10,
-    wallWidth: 10,
+    corridorWidth: 1,
+    wallWidth: 1,
   };
 
   const handleSubmit = (values: MazeFormValues) => {
@@ -26,24 +27,30 @@ const Generator = () => {
     setMaze(newMaze);
   };
 
-  const handleExport = () => {
-    if (maze !== null) exportToMcFunction(maze);
+  const handleExport = (formik: FormikProps<MazeFormValues>) => {
+    if (maze === null) return;
+    const blocks = mazeToBlocks(
+      maze,
+      +formik.values.corridorWidth,
+      +formik.values.wallWidth,
+    );
+    exportToMcFunction(blocks);
   };
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {(formik) => {
+      {(formik: FormikProps<MazeFormValues>) => {
         return (
           <Row>
             <Col>
-              <MazeForm onExportClick={handleExport} />
+              <MazeForm onExportClick={() => handleExport(formik)} />
             </Col>
             <Col sm={8}>
               {maze ? (
                 <Visualizer
                   maze={maze}
-                  cellWidth={formik.values.corridorWidth}
-                  wallWidth={formik.values.wallWidth}
+                  cellWidth={formik.values.corridorWidth * 10}
+                  wallWidth={formik.values.wallWidth * 10}
                   showSolution={formik.values.showSolution}
                 />
               ) : null}

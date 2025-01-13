@@ -1,6 +1,6 @@
-import Maze from "../models/maze";
+import Block from "../models/block";
 
-export function exportToMcFunction(maze: Maze) {
+export function exportToMcFunction(maze: Block[][]) {
   const content = JSON.stringify(maze, null, 2);
   const blob = new Blob([content], { type: "text/plain" });
   const url = window.URL.createObjectURL(blob);
