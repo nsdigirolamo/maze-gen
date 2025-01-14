@@ -6,8 +6,13 @@ import Visualizer from "../components/Visualizer";
 import Maze from "../models/maze";
 import MAZE_CREATORS from "../constants/maze-creators";
 import MazeFormValues from "../models/maze-form-values";
-import { mazeToBlocks } from "../logic/maze";
-import { createDatapack, mazeToMcFunction } from "../logic/mcFunction";
+import { mazeToBlocks, solutionToBlocks, solveMaze } from "../logic/maze";
+import {
+  createDatapack,
+  mazeToMcFunction,
+  solutionToMcFunction,
+} from "../logic/mcFunction";
+import Coordinate from "../models/coordinate";
 
 const Generator = () => {
   const [maze, setMaze] = useState<Maze | null>(null);
@@ -29,13 +34,27 @@ const Generator = () => {
 
   const handleExport = (formik: FormikProps<MazeFormValues>) => {
     if (maze === null) return;
-    const blocks = mazeToBlocks(
+    const mazeBlocks = mazeToBlocks(
       maze,
       +formik.values.corridorWidth,
       +formik.values.wallWidth,
     );
-    const mazeFunction = mazeToMcFunction(blocks);
-    createDatapack(mazeFunction, "").then((datapack) => {
+    const mazeFunction = mazeToMcFunction(mazeBlocks);
+
+    const start: Coordinate = { row: 0, col: 0 };
+    const end: Coordinate = { row: maze.length - 1, col: maze[0].length - 1 };
+    const solution = solveMaze(maze, start, end);
+    console.log(solution);
+    const solutionBlocks = solutionToBlocks(
+      maze,
+      solution,
+      +formik.values.corridorWidth,
+      +formik.values.wallWidth,
+    );
+    console.log(solutionBlocks);
+    const solutionFunction = solutionToMcFunction(solutionBlocks);
+
+    createDatapack(mazeFunction, solutionFunction).then((datapack) => {
       const url = window.URL.createObjectURL(datapack);
       const link = document.createElement("a");
       link.href = url;

@@ -4,8 +4,8 @@ import Block from "../models/block";
 // TODO: Improve this function. An optimal version of this algorithm would have
 // a single Minecraft command for each wall segment while minimizing the total
 // number of commands in the *.mcfunction file.
-export function mazeToMcFunction(maze: Block[][]): string {
-  const rowReducer = (prevString: string, row: boolean[], rowIndex: number) => {
+export function mazeToMcFunction(blocks: Block[][]): string {
+  const rowReducer = (prevString: string, row: Block[], rowIndex: number) => {
     let nextString = "";
 
     let startColIndex = 0;
@@ -26,9 +26,25 @@ export function mazeToMcFunction(maze: Block[][]): string {
   };
 
   return (
-    `\nfill ~0 ~0 ~0 ~0 ~1 ~${maze.length - 1} stone` +
-    maze.reduce(rowReducer, "") +
-    `\nfill ~${maze[0].length - 1} ~0 ~0 ~${maze[0].length - 1} ~1 ~${maze.length - 1} stone`
+    `\nfill ~0 ~0 ~0 ~0 ~1 ~${blocks.length - 1} stone` +
+    blocks.reduce(rowReducer, "") +
+    `\nfill ~${blocks[0].length - 1} ~0 ~0 ~${blocks[0].length - 1} ~1 ~${blocks.length - 1} stone`
+  );
+}
+
+export function solutionToMcFunction(blocks: Block[][]): string {
+  return blocks.reduce(
+    (prevString: string, row: Block[], rowIndex: number) =>
+      prevString +
+      row.reduce(
+        (commands: string, block: Block, colIndex: number) =>
+          block
+            ? commands +
+              `\nfill ~${colIndex} ~0 ~${rowIndex} ~${colIndex} ~1 ~${rowIndex} red_wool`
+            : commands,
+        "",
+      ),
+    "",
   );
 }
 

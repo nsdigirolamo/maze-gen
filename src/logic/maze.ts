@@ -232,3 +232,29 @@ export function mazeToBlocks(
 
   return blocks;
 }
+
+export function solutionToBlocks(
+  maze: Maze,
+  solution: Coordinate[],
+  cellWidth: number,
+  wallWidth: number,
+): Block[][] {
+  const height = maze.length * cellWidth + (maze.length + 1) * wallWidth;
+  const width = maze[0].length * cellWidth + (maze[0].length + 1) * wallWidth;
+
+  const blocks: Block[][] = new Array(height);
+  for (let y = 0; y < height; y++) {
+    blocks[y] = new Array(width);
+    for (let x = 0; x < width; x++) {
+      blocks[y][x] = false;
+    }
+  }
+
+  solution.forEach((coordinate) => {
+    const x = (1 + coordinate.col) * wallWidth + coordinate.col * cellWidth;
+    const y = (1 + coordinate.row) * wallWidth + coordinate.row * cellWidth;
+    blocks[y][x] = true;
+  });
+
+  return blocks;
+}
