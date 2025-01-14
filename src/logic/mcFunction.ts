@@ -1,6 +1,10 @@
+import JSZip from "jszip";
 import Block from "../models/block";
 
-export function exportToMcFunction(maze: Block[][]) {
+// TODO: Improve this function. An optimal version of this algorithm would have
+// a single Minecraft command for each wall segment while minimizing the total
+// number of commands in the *.mcfunction file.
+export function mazeToMcFunction(maze: Block[][]): string {
   const rowReducer = (prevString: string, row: boolean[], rowIndex: number) => {
     let nextString = "";
 
@@ -21,16 +25,32 @@ export function exportToMcFunction(maze: Block[][]) {
     return prevString + nextString;
   };
 
-  const content =
+  return (
     `\nfill ~0 ~0 ~0 ~0 ~1 ~${maze.length - 1} stone` +
     maze.reduce(rowReducer, "") +
-    `\nfill ~${maze[0].length - 1} ~0 ~0 ~${maze[0].length - 1} ~1 ~${maze.length - 1} stone`;
+    `\nfill ~${maze[0].length - 1} ~0 ~0 ~${maze[0].length - 1} ~1 ~${maze.length - 1} stone`
+  );
+}
 
-  const blob = new Blob([content], { type: "text/plain" });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "maze.mcfunction";
-  link.click();
-  window.URL.revokeObjectURL(url);
+export function createDatapack(
+  mazeFunction: string,
+  solutionFunction: string,
+): Promise<Blob> {
+  const zip = new JSZip();
+
+  zip?.file(
+    "pack.mcmeta",
+    `{"pack":{"pack_format":48,"description":"Mazes Datapack"}}`,
+  );
+  const functionFolder = zip
+    ?.folder("data")
+    ?.folder("mazes")
+    ?.folder("function");
+
+  functionFolder?.file("load.mcfunction", "");
+  functionFolder?.file("tick.mcfunction", "");
+  functionFolder?.file("maze.mcfunction", mazeFunction);
+  functionFolder?.file("solution.mcfunction", solutionFunction);
+
+  return zip.generateAsync({ type: "blob" });
 }

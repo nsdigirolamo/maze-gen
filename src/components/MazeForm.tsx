@@ -83,7 +83,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
       <Row>
         <div>
           <Button className="me-3" variant="primary" onClick={onExportClick}>
-            Export to File
+            Export to Data Pack
           </Button>
           <ToggleButton
             id="toggle-check"
