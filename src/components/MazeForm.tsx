@@ -20,6 +20,8 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
 
   return (
     <Form onSubmit={handleSubmit}>
+      <h4 className="mb-3">Options</h4>
+
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Width</Form.Label>
@@ -30,6 +32,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           <Field className="form-control" name="height" type="number" min={1} />
         </Form.Group>
       </Row>
+
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Algorithm</Form.Label>
@@ -40,6 +43,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           </Field>
         </Form.Group>
       </Row>
+
       <Row className="mb-3">
         <div>
           <Button variant="primary" type="submit" className="me-3">
@@ -57,6 +61,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           </ToggleButton>
         </div>
       </Row>
+
       <Row className="mb-3">
         <div>
           <Button
@@ -80,19 +85,30 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           </ToggleButton>
         </div>
       </Row>
+
       <Row>
         <div className="text-center my-5">
           Use the controls to generate a maze.
           <br />
           Large mazes may take some time to generate.
+          <br />
+          Created by{" "}
+          <a href="https://www.nsdigirolamo.com">Nicholas DiGirolamo</a>
         </div>
       </Row>
+
       <Row hidden={hideAdvancedOptions}>
         <h4 className="mb-3">Advanced Options</h4>
+
         <Row className="mb-3">
           <Form.Group className="col">
             <Form.Label>Corridor Width</Form.Label>
-            <Field className="form-select" name="corridorWidth" as="select">
+            <Field
+              className="form-select"
+              name="corridorWidth"
+              as="select"
+              type="number"
+            >
               {sizeOptions.map((element, index) => (
                 <option value={element} key={index} label={"" + element} />
               ))}
@@ -100,13 +116,19 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           </Form.Group>
           <Form.Group className="col">
             <Form.Label>Wall Width</Form.Label>
-            <Field className="form-select" name="wallWidth" as="select">
+            <Field
+              className="form-select"
+              name="wallWidth"
+              as="select"
+              type="number"
+            >
               {sizeOptions.map((element, index) => (
                 <option value={element} key={index} label={"" + element} />
               ))}
             </Field>
           </Form.Group>
         </Row>
+
         <Row className="mb-3">
           <CoordinateInput
             label="Start Coordinate"
@@ -115,6 +137,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
             maxColumn={values.width - 1}
           />
         </Row>
+
         <Row className="mb-3">
           <CoordinateInput
             label="End Coordinate"

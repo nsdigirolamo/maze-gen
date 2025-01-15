@@ -12,11 +12,9 @@ import {
   mazeToMcFunction,
   solutionToMcFunction,
 } from "../logic/mcFunction";
-import Coordinate from "../models/coordinate";
 
 const Generator = () => {
   const [maze, setMaze] = useState<Maze | null>(null);
-  const [solution, setSolution] = useState<Coordinate[]>([]);
 
   const initialValues: MazeFormValues = {
     width: 10,
@@ -35,9 +33,7 @@ const Generator = () => {
       onSubmit={(values, helpers) => {
         const creatorFunction = MAZE_CREATORS[values.mazeCreatorIndex].function;
         const newMaze = creatorFunction(values.width, values.height);
-        const newSolution = solveMaze(newMaze, values.start, values.end);
         setMaze(newMaze);
-        setSolution(newSolution);
         helpers.setFieldValue("start", { row: 0, col: 0 });
         helpers.setFieldValue("end", {
           row: values.height - 1,
@@ -52,20 +48,27 @@ const Generator = () => {
               <MazeForm
                 onExportClick={(values: MazeFormValues) => {
                   if (maze === null) return;
+
+                  // TODO: corridorWidth and wallWidth are strings when
+                  // the user selects them to be non-default values. Need to
+                  // find a better solution than using '+' to convert them back
+                  // to numbers.
                   const mazeBlocks = mazeToBlocks(
                     maze,
-                    values.corridorWidth,
-                    values.wallWidth,
+                    +values.corridorWidth,
+                    +values.wallWidth,
                   );
+                  const mazeFunction = mazeToMcFunction(mazeBlocks);
+
+                  const solution = solveMaze(maze, values.start, values.end);
                   const solutionBlocks = solutionToBlocks(
                     maze,
                     solution,
-                    values.corridorWidth,
-                    values.wallWidth,
+                    +values.corridorWidth,
+                    +values.wallWidth,
                   );
-
-                  const mazeFunction = mazeToMcFunction(mazeBlocks);
                   const solutionFunction = solutionToMcFunction(solutionBlocks);
+
                   createDatapack(mazeFunction, solutionFunction).then(
                     (datapack) => {
                       const url = window.URL.createObjectURL(datapack);
