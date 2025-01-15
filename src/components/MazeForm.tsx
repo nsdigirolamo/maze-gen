@@ -3,6 +3,7 @@ import { Button, Form, Row, ToggleButton } from "react-bootstrap";
 import { Field, useFormikContext } from "formik";
 import MAZE_CREATORS from "../constants/maze-creators";
 import CoordinateInput from "./CoordinateInput";
+import { useState } from "react";
 
 const sizeOptions = [1, 2, 3, 4, 5];
 
@@ -11,6 +12,7 @@ interface MazeFormProps {
 }
 
 const MazeForm = ({ onExportClick }: MazeFormProps) => {
+  const [hideAdvancedOptions, setHideAdvancedOptions] = useState<boolean>(true);
   const { values, handleSubmit, setFieldValue } =
     useFormikContext<MazeFormValues>();
 
@@ -40,51 +42,20 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
       </Row>
       <Row className="mb-3">
         <div>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" className="me-3">
             Generate Maze
           </Button>
+          <ToggleButton
+            id="toggle-check"
+            type="checkbox"
+            variant="outline-secondary"
+            checked={values.showSolution}
+            value="1"
+            onClick={() => setFieldValue("showSolution", !values.showSolution)}
+          >
+            {values.showSolution ? "Hide Solution" : "Show Solution"}
+          </ToggleButton>
         </div>
-      </Row>
-      <Row>
-        <div className="text-center my-5">
-          Use the controls above and below to generate the maze.
-          <br />
-          Large mazes may take some time to generate.
-        </div>
-      </Row>
-      <Row className="mb-3">
-        <Form.Group className="col">
-          <Form.Label>Corridor Width</Form.Label>
-          <Field className="form-select" name="corridorWidth" as="select">
-            {sizeOptions.map((element, index) => (
-              <option value={element} key={index} label={"" + element} />
-            ))}
-          </Field>
-        </Form.Group>
-        <Form.Group className="col">
-          <Form.Label>Wall Width</Form.Label>
-          <Field className="form-select" name="wallWidth" as="select">
-            {sizeOptions.map((element, index) => (
-              <option value={element} key={index} label={"" + element} />
-            ))}
-          </Field>
-        </Form.Group>
-      </Row>
-      <Row className="mb-3">
-        <CoordinateInput
-          label="Start Coordinate"
-          name="start"
-          maxRow={values.height - 1}
-          maxColumn={values.width - 1}
-        />
-      </Row>
-      <Row className="mb-3">
-        <CoordinateInput
-          label="End Coordinate"
-          name="end"
-          maxRow={values.height - 1}
-          maxColumn={values.width - 1}
-        />
       </Row>
       <Row className="mb-3">
         <div>
@@ -99,13 +70,59 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
             id="toggle-check"
             type="checkbox"
             variant="outline-secondary"
-            checked={values.showSolution}
+            checked={!hideAdvancedOptions}
             value="1"
-            onClick={() => setFieldValue("showSolution", !values.showSolution)}
+            onClick={() => setHideAdvancedOptions(!hideAdvancedOptions)}
           >
-            {values.showSolution ? "Hide Solution" : "Show Solution"}
+            {hideAdvancedOptions
+              ? "Show Advanced Options"
+              : "Hide Advanced Options"}
           </ToggleButton>
         </div>
+      </Row>
+      <Row>
+        <div className="text-center my-5">
+          Use the controls to generate a maze.
+          <br />
+          Large mazes may take some time to generate.
+        </div>
+      </Row>
+      <Row hidden={hideAdvancedOptions}>
+        <h4 className="mb-3">Advanced Options</h4>
+        <Row className="mb-3">
+          <Form.Group className="col">
+            <Form.Label>Corridor Width</Form.Label>
+            <Field className="form-select" name="corridorWidth" as="select">
+              {sizeOptions.map((element, index) => (
+                <option value={element} key={index} label={"" + element} />
+              ))}
+            </Field>
+          </Form.Group>
+          <Form.Group className="col">
+            <Form.Label>Wall Width</Form.Label>
+            <Field className="form-select" name="wallWidth" as="select">
+              {sizeOptions.map((element, index) => (
+                <option value={element} key={index} label={"" + element} />
+              ))}
+            </Field>
+          </Form.Group>
+        </Row>
+        <Row className="mb-3">
+          <CoordinateInput
+            label="Start Coordinate"
+            name="start"
+            maxRow={values.height - 1}
+            maxColumn={values.width - 1}
+          />
+        </Row>
+        <Row className="mb-3">
+          <CoordinateInput
+            label="End Coordinate"
+            name="end"
+            maxRow={values.height - 1}
+            maxColumn={values.width - 1}
+          />
+        </Row>
       </Row>
     </Form>
   );
