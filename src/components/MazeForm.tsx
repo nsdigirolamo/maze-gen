@@ -1,51 +1,41 @@
 import MazeFormValues from "../models/maze-form-values";
 import { Button, Form, Row, ToggleButton } from "react-bootstrap";
-import { useFormikContext } from "formik";
+import { Field, useFormikContext } from "formik";
 import MAZE_CREATORS from "../constants/maze-creators";
+import CoordinateInput from "./CoordinateInput";
 
 const sizeOptions = [1, 2, 3, 4, 5];
 
 interface MazeFormProps {
-  onExportClick: () => void;
+  onExportClick: (values: MazeFormValues) => void;
 }
 
 const MazeForm = ({ onExportClick }: MazeFormProps) => {
-  const { values, handleSubmit, getFieldProps, setFieldValue } =
+  const { values, handleSubmit, setFieldValue } =
     useFormikContext<MazeFormValues>();
+
+  const handleExportClick = () => onExportClick(values);
 
   return (
     <Form onSubmit={handleSubmit}>
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Width</Form.Label>
-          <Form.Control
-            id="width"
-            type="number"
-            {...getFieldProps("width")}
-            min={1}
-          />
+          <Field className="form-control" name="width" type="number" min={1} />
         </Form.Group>
         <Form.Group className="col">
           <Form.Label>Height</Form.Label>
-          <Form.Control
-            id="height"
-            type="number"
-            {...getFieldProps("height")}
-            min={1}
-          />
+          <Field className="form-control" name="height" type="number" min={1} />
         </Form.Group>
       </Row>
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Algorithm</Form.Label>
-          <Form.Select
-            id="mazeCreatorIndex"
-            {...getFieldProps("mazeCreatorIndex")}
-          >
+          <Field className="form-select" name="mazeCreatorIndex" as="select">
             {MAZE_CREATORS.map((element, index) => (
               <option value={index} key={index} label={element.name} />
             ))}
-          </Form.Select>
+          </Field>
         </Form.Group>
       </Row>
       <Row className="mb-3">
@@ -65,24 +55,44 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Corridor Width</Form.Label>
-          <Form.Select id="corridorWidth" {...getFieldProps("corridorWidth")}>
+          <Field className="form-select" name="corridorWidth" as="select">
             {sizeOptions.map((element, index) => (
               <option value={element} key={index} label={"" + element} />
             ))}
-          </Form.Select>
+          </Field>
         </Form.Group>
         <Form.Group className="col">
           <Form.Label>Wall Width</Form.Label>
-          <Form.Select id="wallWidth" {...getFieldProps("wallWidth")}>
+          <Field className="form-select" name="wallWidth" as="select">
             {sizeOptions.map((element, index) => (
               <option value={element} key={index} label={"" + element} />
             ))}
-          </Form.Select>
+          </Field>
         </Form.Group>
       </Row>
-      <Row>
+      <Row className="mb-3">
+        <CoordinateInput
+          label="Start Coordinate"
+          name="start"
+          maxRow={values.height - 1}
+          maxColumn={values.width - 1}
+        />
+      </Row>
+      <Row className="mb-3">
+        <CoordinateInput
+          label="End Coordinate"
+          name="end"
+          maxRow={values.height - 1}
+          maxColumn={values.width - 1}
+        />
+      </Row>
+      <Row className="mb-3">
         <div>
-          <Button className="me-3" variant="primary" onClick={onExportClick}>
+          <Button
+            className="me-3"
+            variant="primary"
+            onClick={handleExportClick}
+          >
             Export to Data Pack
           </Button>
           <ToggleButton

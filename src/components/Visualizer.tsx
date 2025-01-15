@@ -7,7 +7,9 @@ interface VisualizerProps {
   maze: Maze;
   cellWidth: number;
   wallWidth: number;
-  showSolution?: boolean;
+  showSolution: boolean;
+  start: Coordinate;
+  end: Coordinate;
 }
 
 function Visualizer({
@@ -15,6 +17,8 @@ function Visualizer({
   cellWidth,
   wallWidth,
   showSolution,
+  start,
+  end,
 }: VisualizerProps): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -26,9 +30,6 @@ function Visualizer({
     2 * padding + (mazeWidth + 1) * wallWidth + mazeWidth * cellWidth;
   const canvasHeight =
     2 * padding + (mazeHeight + 1) * wallWidth + mazeHeight * cellWidth;
-
-  const start: Coordinate = { row: 0, col: 0 };
-  const end: Coordinate = { row: mazeHeight - 1, col: mazeWidth - 1 };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -55,7 +56,7 @@ function Visualizer({
         wallWidth,
       );
     }
-  }, [maze, showSolution, cellWidth, wallWidth]);
+  }, [maze, showSolution, cellWidth, wallWidth, start, end]);
 
   return (
     <canvas
