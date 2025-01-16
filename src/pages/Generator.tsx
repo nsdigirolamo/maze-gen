@@ -12,6 +12,7 @@ import {
   mazeToMcFunction,
   solutionToMcFunction,
 } from "../logic/mcFunction";
+import Coordinate from "../models/coordinate";
 
 const Generator = () => {
   const [maze, setMaze] = useState<Maze | null>(null);
@@ -23,8 +24,8 @@ const Generator = () => {
     showSolution: false,
     corridorWidth: 1,
     wallWidth: 1,
-    start: { row: 0, col: 0 },
-    end: { row: 9, col: 9 },
+    start: [0, 0],
+    end: [9, 9],
   };
 
   return (
@@ -34,11 +35,11 @@ const Generator = () => {
         const creatorFunction = MAZE_CREATORS[values.mazeCreatorIndex].function;
         const newMaze = creatorFunction(values.width, values.height);
         setMaze(newMaze);
-        helpers.setFieldValue("start", { row: 0, col: 0 });
-        helpers.setFieldValue("end", {
-          row: values.height - 1,
-          col: values.width - 1,
-        });
+        helpers.setFieldValue("start", [0, 0] as Coordinate);
+        helpers.setFieldValue("end", [
+          values.height - 1,
+          values.width - 1,
+        ] as Coordinate);
       }}
     >
       {(formik: FormikProps<MazeFormValues>) => {
@@ -86,9 +87,9 @@ const Generator = () => {
               {maze ? (
                 <Visualizer
                   maze={maze}
-                  cellWidth={formik.values.corridorWidth * 10}
-                  wallWidth={formik.values.wallWidth * 10}
                   showSolution={formik.values.showSolution}
+                  corridorWidth={formik.values.corridorWidth * 10}
+                  wallWidth={formik.values.wallWidth * 10}
                   start={formik.values.start}
                   end={formik.values.end}
                 />

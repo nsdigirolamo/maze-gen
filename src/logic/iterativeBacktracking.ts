@@ -1,6 +1,6 @@
 import Coordinate from "../models/coordinate";
 import Maze from "../models/maze";
-import { createMaze } from "./maze";
+import { createMaze, isCoordinateInBounds } from "./maze";
 import { genRandomInt } from "./random";
 
 export function createIterativeBacktrackingMaze(
@@ -12,7 +12,7 @@ export function createIterativeBacktrackingMaze(
   const stack: Array<Coordinate> = new Array<Coordinate>();
 
   // 1 Choose the initial cell, mark it as visited and push it to the stack
-  const start = { row: 0, col: Math.floor(width / 2.0) };
+  const start: Coordinate = [0, Math.floor(width / 2.0)];
   visited.add(JSON.stringify(start));
   stack.push(start);
 
@@ -21,16 +21,18 @@ export function createIterativeBacktrackingMaze(
     // 2.1 Pop a cell from the stack and make it the current cell
     const current = stack.pop()!;
 
-    const top: Coordinate = { row: current.row - 1, col: current.col };
-    const bottom: Coordinate = { row: current.row + 1, col: current.col };
-    const left: Coordinate = { row: current.row, col: current.col - 1 };
-    const right: Coordinate = { row: current.row, col: current.col + 1 };
-    const neighbors = [top, bottom, left, right].filter((neighbor) => {
-      return (
-        isCoordInBounds(neighbor, maze) &&
-        !visited.has(JSON.stringify(neighbor))
-      );
-    });
+    const top = [current[0] - 1, current[1]];
+    const bottom = [current[0] + 1, current[1]];
+    const left = [current[0], current[1] - 1];
+    const right = [current[0], current[1] + 1];
+    const neighbors = ([top, bottom, left, right] as Coordinate[]).filter(
+      (neighbor) => {
+        return (
+          isCoordinateInBounds(maze, neighbor) &&
+          !visited.has(JSON.stringify(neighbor))
+        );
+      },
+    );
 
     // 2.2 If the current cell has any neighbors which have not been visited...
     if (neighbors.length !== 0) {
@@ -39,8 +41,8 @@ export function createIterativeBacktrackingMaze(
       // 2.2.2 Choose one of the unvisited neighbors
       const chosen = neighbors[genRandomInt(0, neighbors.length)];
 
-      const currentCell = maze[current.row][current.col];
-      const chosenCell = maze[chosen.row][chosen.col];
+      const currentCell = maze[current[0]][current[1]];
+      const chosenCell = maze[chosen[0]][chosen[1]];
 
       // 2.2.3 Remove the wall between the current cell and chosen cell
       if (chosen === top) {
@@ -64,12 +66,4 @@ export function createIterativeBacktrackingMaze(
   }
 
   return maze;
-}
-
-function isCoordInBounds(coordinate: Coordinate, maze: Maze): boolean {
-  const row = coordinate.row;
-  const col = coordinate.col;
-  const height = maze.length;
-  const width = maze[0].length;
-  return 0 <= row && 0 <= col && row < height && col < width;
 }

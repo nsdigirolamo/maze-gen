@@ -36,8 +36,8 @@ export function solveMaze(
     while (0 < queue.length) {
       const current = queue.shift()!;
       if (
-        current.coordinate.row === end.row &&
-        current.coordinate.col === end.col
+        current.coordinate[0] === end[0] &&
+        current.coordinate[1] === end[1]
       ) {
         return current;
       }
@@ -53,30 +53,18 @@ export function solveMaze(
         }
       };
 
-      const cell = maze[current.coordinate.row][current.coordinate.col];
+      const cell = maze[current.coordinate[0]][current.coordinate[1]];
       if (!cell.walls.top) {
-        addNext({
-          row: current.coordinate.row - 1,
-          col: current.coordinate.col,
-        });
+        addNext([current.coordinate[0] - 1, current.coordinate[1]]);
       }
       if (!cell.walls.bottom) {
-        addNext({
-          row: current.coordinate.row + 1,
-          col: current.coordinate.col,
-        });
+        addNext([current.coordinate[0] + 1, current.coordinate[1]]);
       }
       if (!cell.walls.left) {
-        addNext({
-          row: current.coordinate.row,
-          col: current.coordinate.col - 1,
-        });
+        addNext([current.coordinate[0], current.coordinate[1] - 1]);
       }
       if (!cell.walls.right) {
-        addNext({
-          row: current.coordinate.row,
-          col: current.coordinate.col + 1,
-        });
+        addNext([current.coordinate[0], current.coordinate[1] + 1]);
       }
     }
 
@@ -94,17 +82,17 @@ export function solveMaze(
   return solution;
 }
 
-export function CoordinateInBounds(maze: Maze, coordinate: Coordinate) {
+export function isCoordinateInBounds(maze: Maze, coordinate: Coordinate) {
   return (
-    0 <= coordinate.row &&
-    coordinate.row < maze.length &&
-    0 <= coordinate.col &&
-    coordinate.col < maze[0].length
+    0 <= coordinate[0] &&
+    coordinate[0] < maze.length &&
+    0 <= coordinate[1] &&
+    coordinate[1] < maze[0].length
   );
 }
 
-export function getCellAtCoordinate(maze: Maze, coordinate: Coordinate) {
-  return maze[coordinate.row][coordinate.col];
+export function getCell(maze: Maze, coordinate: Coordinate) {
+  return maze[coordinate[0]][coordinate[1]];
 }
 
 export function getEdges(maze: Maze): Edge[] {
@@ -114,25 +102,25 @@ export function getEdges(maze: Maze): Edge[] {
   const edges: Edge[] = [];
   for (let row = 0; row < height; row++) {
     for (let col = row % 2; col < width; col = col + 2) {
-      const c1: Coordinate = { row, col };
+      const c1: Coordinate = [row, col];
 
       if (row != 0) {
-        const c2: Coordinate = { row: row - 1, col };
+        const c2: Coordinate = [row - 1, col];
         const edge: Edge = { c1, c2 };
         edges.push(edge);
       }
       if (row != height - 1) {
-        const c2: Coordinate = { row: row + 1, col };
+        const c2: Coordinate = [row + 1, col];
         const edge: Edge = { c1, c2 };
         edges.push(edge);
       }
       if (col != 0) {
-        const c2: Coordinate = { row, col: col - 1 };
+        const c2: Coordinate = [row, col - 1];
         const edge: Edge = { c1, c2 };
         edges.push(edge);
       }
       if (col != width - 1) {
-        const c2: Coordinate = { row, col: col + 1 };
+        const c2: Coordinate = [row, col + 1];
         const edge: Edge = { c1, c2 };
         edges.push(edge);
       }
@@ -143,11 +131,11 @@ export function getEdges(maze: Maze): Edge[] {
 }
 
 export function removeWallAtEdge(maze: Maze, edge: Edge): Maze {
-  const cell1 = getCellAtCoordinate(maze, edge.c1);
-  const cell2 = getCellAtCoordinate(maze, edge.c2);
+  const cell1 = getCell(maze, edge.c1);
+  const cell2 = getCell(maze, edge.c2);
 
-  const rowDifference = edge.c1.row - edge.c2.row;
-  const colDifference = edge.c1.col - edge.c2.col;
+  const rowDifference = edge.c1[0] - edge.c2[0];
+  const colDifference = edge.c1[1] - edge.c2[1];
 
   if (rowDifference == 1) {
     cell1.walls.top = false;
@@ -251,8 +239,8 @@ export function solutionToBlocks(
   }
 
   solution.forEach((coordinate) => {
-    const x = (1 + coordinate.col) * wallWidth + coordinate.col * cellWidth;
-    const y = (1 + coordinate.row) * wallWidth + coordinate.row * cellWidth;
+    const x = (1 + coordinate[1]) * wallWidth + coordinate[1] * cellWidth;
+    const y = (1 + coordinate[0]) * wallWidth + coordinate[0] * cellWidth;
     blocks[y][x] = true;
   });
 
