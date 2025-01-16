@@ -1,6 +1,3 @@
-type Coordinate = {
-  row: number;
-  col: number;
-};
+type Coordinate = [number, number];
 
 export default Coordinate;

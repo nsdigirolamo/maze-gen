@@ -19,7 +19,7 @@ const CoordinateInput = ({
   const { getFieldProps, setFieldValue } = useFormikContext<MazeFormValues>();
 
   const handleChange = (row: number, col: number) => {
-    const newCoordinate: Coordinate = { row, col };
+    const newCoordinate: Coordinate = [row, col];
     setFieldValue(name, newCoordinate);
   };
 
@@ -35,11 +35,11 @@ const CoordinateInput = ({
             type="number"
             min={0}
             max={maxRow}
-            value={(getFieldProps(name).value as Coordinate).row}
+            value={(getFieldProps(name).value as Coordinate)[0]}
             onChange={(event) =>
               handleChange(
                 +event.target.value,
-                (getFieldProps(name).value as Coordinate).col,
+                (getFieldProps(name).value as Coordinate)[1],
               )
             }
             onBlur={getFieldProps(name).onBlur}
@@ -53,10 +53,10 @@ const CoordinateInput = ({
             type="number"
             min={0}
             max={maxColumn}
-            value={(getFieldProps(name).value as Coordinate).col}
+            value={(getFieldProps(name).value as Coordinate)[1]}
             onChange={(event) =>
               handleChange(
-                (getFieldProps(name).value as Coordinate).row,
+                (getFieldProps(name).value as Coordinate)[0],
                 +event.target.value,
               )
             }

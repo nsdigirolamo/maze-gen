@@ -1,166 +1,139 @@
 import { ReactElement, useEffect, useRef } from "react";
-import { solveMaze } from "../logic/maze";
 import Maze from "../models/maze";
 import Coordinate from "../models/coordinate";
+import { select } from "d3";
+import { area, line } from "d3-shape";
+import { solveMaze } from "../logic/maze";
 
 interface VisualizerProps {
   maze: Maze;
-  cellWidth: number;
-  wallWidth: number;
   showSolution: boolean;
+  corridorWidth: number;
+  wallWidth: number;
   start: Coordinate;
   end: Coordinate;
 }
 
 function Visualizer({
   maze,
-  cellWidth,
-  wallWidth,
   showSolution,
+  corridorWidth,
+  wallWidth,
   start,
   end,
 }: VisualizerProps): ReactElement {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
-  const mazeWidth = maze[0].length;
-  const mazeHeight = maze.length;
+  const mazeRows = maze.length;
+  const mazeColumns = maze[0].length;
 
-  const padding = 10;
-  const canvasWidth =
-    2 * padding + (mazeWidth + 1) * wallWidth + mazeWidth * cellWidth;
-  const canvasHeight =
-    2 * padding + (mazeHeight + 1) * wallWidth + mazeHeight * cellWidth;
+  const svgWidth = (mazeColumns + 1) * wallWidth + mazeColumns * corridorWidth;
+  const svgHeight = (mazeRows + 1) * wallWidth + mazeRows * corridorWidth;
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
+    const svg = svgRef.current;
+    if (svg === null) return;
+    select(svg).selectChildren().remove();
+    select(svg).attr("width", svgWidth).attr("height", svgHeight);
 
-    const context = canvas.getContext("2d");
-    if (context === null) return;
-
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-
-    context.fillStyle = "black";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    drawWalls(context, maze, padding, cellWidth, wallWidth);
-    drawPadding(context, padding);
+    const g = select(svg).append("g").node()!;
+    fillArea(g, [0, 0], svgWidth, svgHeight, "black");
+    drawCorridors(g, maze, corridorWidth, wallWidth);
 
     if (showSolution) {
-      drawSolution(
-        context,
-        solveMaze(maze, start, end),
-        padding,
-        cellWidth,
-        wallWidth,
-      );
+      const g = select(svg).append("g").node()!;
+      const solution = solveMaze(maze, start, end);
+      drawSolution(g, solution, corridorWidth, wallWidth);
     }
-  }, [maze, showSolution, cellWidth, wallWidth, start, end]);
+  }, [maze, showSolution, corridorWidth, wallWidth, start, end]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ height: canvasHeight, width: canvasWidth }}
-    />
-  );
+  return <svg ref={svgRef} />;
 }
 
-function drawWalls(
-  context: CanvasRenderingContext2D,
+function drawCorridors(
+  svg: SVGElement,
   maze: Maze,
-  padding: number,
-  cellWidth: number,
+  corridorWidth: number,
   wallWidth: number,
 ) {
-  context.fillStyle = "white";
+  maze.forEach((row, rowIndex) =>
+    row.forEach((cell, colIndex) => {
+      const x = (1 + colIndex) * wallWidth + colIndex * corridorWidth;
+      const y = (1 + rowIndex) * wallWidth + rowIndex * corridorWidth;
 
-  for (let row = 0; row < maze.length; row++) {
-    for (let col = 0; col < maze[0].length; col++) {
-      const cell = maze[row][col];
-
-      const x = padding + (1 + col) * wallWidth + col * cellWidth;
-      const y = padding + (1 + row) * wallWidth + row * cellWidth;
-
-      context.fillRect(x, y, cellWidth, cellWidth);
+      fillArea(svg, [x, y], corridorWidth, corridorWidth, "white");
 
       if (!cell.walls.top) {
         const wallX = x;
         const wallY = y - wallWidth;
-        context.fillRect(wallX, wallY, cellWidth, wallWidth);
-      }
-      if (!cell.walls.right) {
-        const wallX = x + cellWidth;
-        const wallY = y;
-        context.fillRect(wallX, wallY, wallWidth, cellWidth);
+        fillArea(svg, [wallX, wallY], corridorWidth, wallWidth, "white");
       }
       if (!cell.walls.bottom) {
         const wallX = x;
-        const wallY = y + cellWidth;
-        context.fillRect(wallX, wallY, cellWidth, wallWidth);
+        const wallY = y + wallWidth;
+        fillArea(svg, [wallX, wallY], corridorWidth, wallWidth, "white");
       }
       if (!cell.walls.left) {
         const wallX = x - wallWidth;
         const wallY = y;
-        context.fillRect(wallX, wallY, wallWidth, cellWidth);
+        fillArea(svg, [wallX, wallY], wallWidth, corridorWidth, "white");
       }
-    }
-  }
+      if (!cell.walls.right) {
+        const wallX = x + wallWidth;
+        const wallY = y;
+        fillArea(svg, [wallX, wallY], wallWidth, corridorWidth, "white");
+      }
+    }),
+  );
 }
 
 function drawSolution(
-  context: CanvasRenderingContext2D,
+  svg: SVGElement,
   solution: Coordinate[],
-  padding: number,
-  cellWidth: number,
+  corridorWidth: number,
   wallWidth: number,
 ) {
-  context.strokeStyle = "red";
-  context.lineWidth = 3;
-  context.beginPath();
+  const points: Coordinate[] = solution.map((coordinate) => {
+    const x =
+      (1 + coordinate[1]) * wallWidth +
+      coordinate[1] * corridorWidth +
+      corridorWidth / 2.0;
+    const y =
+      (1 + coordinate[0]) * wallWidth +
+      coordinate[0] * corridorWidth +
+      corridorWidth / 2.0;
+    return [x, y];
+  });
 
-  for (let index = 0; index < solution.length - 1; index++) {
-    const current = solution[index];
-    const row = current.row;
-    const col = current.col;
-
-    const currentX =
-      padding + (1 + col) * wallWidth + col * cellWidth + cellWidth / 2.0;
-    const currentY =
-      padding + (1 + row) * wallWidth + row * cellWidth + cellWidth / 2.0;
-
-    const next = solution[index + 1];
-    const nextRow = next.row;
-    const nextCol = next.col;
-
-    const nextX =
-      padding +
-      (1 + nextCol) * wallWidth +
-      nextCol * cellWidth +
-      cellWidth / 2.0;
-    const nextY =
-      padding +
-      (1 + nextRow) * wallWidth +
-      nextRow * cellWidth +
-      cellWidth / 2.0;
-
-    context.moveTo(currentX, currentY);
-    context.lineTo(nextX, nextY);
-  }
-
-  context.closePath();
-  context.stroke();
+  drawLine(svg, points);
 }
 
-function drawPadding(context: CanvasRenderingContext2D, padding: number) {
-  const width = context.canvas.width;
-  const height = context.canvas.height;
-  context.fillStyle = "white";
+function fillArea(
+  svg: SVGElement,
+  coordinate: Coordinate,
+  width: number,
+  height: number,
+  fill: string,
+) {
+  const points: Coordinate[] = [
+    coordinate,
+    [coordinate[0] + width, coordinate[1]],
+    [coordinate[0] + width, coordinate[1] + height],
+    [coordinate[0], coordinate[1] + height],
+  ];
 
-  context.fillRect(0, 0, width, padding);
-  context.fillRect(0, 0, padding, width);
-  context.fillRect(width - padding, 0, padding, height);
-  context.fillRect(0, height - padding, width, padding);
+  select(svg).append("path").datum(points).attr("d", area()).attr("fill", fill);
+}
+
+function drawLine(svg: SVGElement, path: Coordinate[]) {
+  const lineGenerator = line();
+  const pathData = lineGenerator(path);
+  select(svg)
+    .append("path")
+    .attr("d", pathData)
+    .attr("fill", "none")
+    .attr("stroke", "red")
+    .attr("stroke-width", 3);
 }
 
 export default Visualizer;

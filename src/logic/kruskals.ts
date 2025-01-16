@@ -12,7 +12,7 @@ export function createKruskalsMaze(width: number, height: number): Maze {
   const setMap: Map<string, Set<string>> = new Map<string, Set<string>>();
   for (let row = 0; row < maze.length; row++) {
     for (let col = 0; col < maze[0].length; col++) {
-      const coord: Coordinate = { row, col };
+      const coord: Coordinate = [row, col];
       setMap.set(JSON.stringify(coord), new Set([JSON.stringify(coord)]));
     }
   }
