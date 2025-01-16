@@ -44,13 +44,14 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
         </Form.Group>
       </Row>
 
-      <Row className="mb-3">
+      <Row>
         <div>
-          <Button variant="primary" type="submit" className="me-3">
+          <Button variant="primary" type="submit" className="me-3 mb-3">
             Generate Maze
           </Button>
           <ToggleButton
             id="toggle-check"
+            className="mb-3"
             type="checkbox"
             variant="outline-secondary"
             checked={values.showSolution}
@@ -62,10 +63,10 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
         </div>
       </Row>
 
-      <Row className="mb-3">
+      <Row>
         <div>
           <Button
-            className="me-3"
+            className="me-3 mb-3"
             variant="primary"
             onClick={handleExportClick}
           >
@@ -73,6 +74,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
           </Button>
           <ToggleButton
             id="toggle-check"
+            className="mb-3"
             type="checkbox"
             variant="outline-secondary"
             checked={!hideAdvancedOptions}
