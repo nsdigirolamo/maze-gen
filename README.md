@@ -1,6 +1,7 @@
 # Maze Generation
 
-A small toy web app that generates mazes. Written in React with Vite.
+A small toy web app that generates mazes. Hosted on
+[www.mazegen.com](https://www.mazegen.com) for free public use.
 
 ## Resources
 
