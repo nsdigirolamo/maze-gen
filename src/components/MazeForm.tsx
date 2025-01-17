@@ -1,9 +1,9 @@
 import MazeFormValues from "../models/maze-form-values";
-import { Button, Form, Row, ToggleButton } from "react-bootstrap";
+import { Button, Col, Form, Row, ToggleButton } from "react-bootstrap";
 import { Field, useFormikContext } from "formik";
 import MAZE_CREATORS from "../constants/maze-creators";
-import CoordinateInput from "./CoordinateInput";
 import { useState } from "react";
+import Feedback from "react-bootstrap/esm/Feedback";
 
 const sizeOptions = [1, 2, 3, 4, 5];
 
@@ -12,24 +12,37 @@ interface MazeFormProps {
 }
 
 const MazeForm = ({ onExportClick }: MazeFormProps) => {
-  const [hideAdvancedOptions, setHideAdvancedOptions] = useState<boolean>(true);
-  const { values, handleSubmit, setFieldValue } =
+  const [advancedOptionsHidden, setAdvancedOptionsHidden] =
+    useState<boolean>(true);
+  const { values, errors, handleSubmit, setFieldValue, getFieldProps } =
     useFormikContext<MazeFormValues>();
 
   const handleExportClick = () => onExportClick(values);
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} noValidate>
       <h4 className="mb-3">Options</h4>
 
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Width</Form.Label>
-          <Field className="form-control" name="width" type="number" min={1} />
+          <Form.Control
+            id="width"
+            type="number"
+            isInvalid={errors.width ? true : false}
+            {...getFieldProps("width")}
+          />
+          <Feedback type="invalid">{errors.width}</Feedback>
         </Form.Group>
         <Form.Group className="col">
           <Form.Label>Height</Form.Label>
-          <Field className="form-control" name="height" type="number" min={1} />
+          <Form.Control
+            id="height"
+            type="number"
+            isInvalid={errors.height ? true : false}
+            {...getFieldProps("height")}
+          />
+          <Feedback type="invalid">{errors.height}</Feedback>
         </Form.Group>
       </Row>
 
@@ -77,11 +90,11 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
             className="mb-3"
             type="checkbox"
             variant="outline-secondary"
-            checked={!hideAdvancedOptions}
+            checked={!advancedOptionsHidden}
             value="1"
-            onClick={() => setHideAdvancedOptions(!hideAdvancedOptions)}
+            onClick={() => setAdvancedOptionsHidden(!advancedOptionsHidden)}
           >
-            {hideAdvancedOptions
+            {advancedOptionsHidden
               ? "Show Advanced Options"
               : "Hide Advanced Options"}
           </ToggleButton>
@@ -99,7 +112,7 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
         </div>
       </Row>
 
-      <Row hidden={hideAdvancedOptions}>
+      <Row hidden={advancedOptionsHidden}>
         <h4 className="mb-3">Advanced Options</h4>
 
         <Row className="mb-3">
@@ -132,21 +145,59 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
         </Row>
 
         <Row className="mb-3">
-          <CoordinateInput
-            label="Start Coordinate"
-            name="start"
-            maxRow={values.height - 1}
-            maxColumn={values.width - 1}
-          />
+          <Col>
+            Start Coordinate
+            <Row>
+              <Form.Group className="col">
+                <Form.Label>Row</Form.Label>
+                <Form.Control
+                  id="startRow"
+                  type="number"
+                  isInvalid={errors.startRow ? true : false}
+                  {...getFieldProps("startRow")}
+                />
+                <Feedback type="invalid">{errors.startRow}</Feedback>
+              </Form.Group>
+              <Form.Group className="col">
+                <Form.Label>Column</Form.Label>
+                <Form.Control
+                  id="startColumn"
+                  type="number"
+                  isInvalid={errors.startColumn ? true : false}
+                  {...getFieldProps("startColumn")}
+                />
+                <Feedback type="invalid">{errors.startColumn}</Feedback>
+              </Form.Group>
+            </Row>
+          </Col>
         </Row>
 
         <Row className="mb-3">
-          <CoordinateInput
-            label="End Coordinate"
-            name="end"
-            maxRow={values.height - 1}
-            maxColumn={values.width - 1}
-          />
+          <Col>
+            End Coordinate
+            <Row>
+              <Form.Group className="col">
+                <Form.Label>Row</Form.Label>
+                <Form.Control
+                  id="endRow"
+                  type="number"
+                  isInvalid={errors.endRow ? true : false}
+                  {...getFieldProps("endRow")}
+                />
+                <Feedback type="invalid">{errors.endRow}</Feedback>
+              </Form.Group>
+              <Form.Group className="col">
+                <Form.Label>Column</Form.Label>
+                <Form.Control
+                  id="endColumn"
+                  type="number"
+                  isInvalid={errors.endColumn ? true : false}
+                  {...getFieldProps("endColumn")}
+                />
+                <Feedback type="invalid">{errors.endColumn}</Feedback>
+              </Form.Group>
+            </Row>
+          </Col>
         </Row>
       </Row>
     </Form>

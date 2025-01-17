@@ -1,5 +1,3 @@
-import Coordinate from "./coordinate";
-
 interface MazeFormValues {
   width: number;
   height: number;
@@ -7,8 +5,10 @@ interface MazeFormValues {
   showSolution: boolean;
   corridorWidth: number;
   wallWidth: number;
-  start: Coordinate;
-  end: Coordinate;
+  startRow: number;
+  startColumn: number;
+  endRow: number;
+  endColumn: number;
 }
 
 export default MazeFormValues;
