@@ -82,24 +82,7 @@ const Generator = () => {
         <Col>
           <MazeForm onSubmit={handleSubmit} onExport={handleExport} />
         </Col>
-        <Col sm={8}>
-          {maze ? (
-            <Visualizer
-              maze={maze}
-              showSolution={formMethods.getValues("showSolution")}
-              corridorWidth={+formMethods.getValues("corridorWidth") * 10}
-              wallWidth={+formMethods.getValues("wallWidth") * 10}
-              start={[
-                +formMethods.getValues("startRow"),
-                +formMethods.getValues("startColumn"),
-              ]}
-              end={[
-                +formMethods.getValues("endRow"),
-                +formMethods.getValues("endColumn"),
-              ]}
-            />
-          ) : null}
-        </Col>
+        <Col sm={8}>{maze ? <Visualizer maze={maze} /> : null}</Col>
       </Row>
     </FormProvider>
   );
