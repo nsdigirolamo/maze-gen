@@ -140,7 +140,7 @@ function createCorridorsSelection(
       }
       if (!cell.walls.bottom) {
         const wallX = x;
-        const wallY = y + wallWidth;
+        const wallY = y + corridorWidth;
         filledAreaSelection.append(() =>
           createFilledAreaSelection(
             [wallX, wallY],
@@ -163,7 +163,7 @@ function createCorridorsSelection(
         );
       }
       if (!cell.walls.right) {
-        const wallX = x + wallWidth;
+        const wallX = x + corridorWidth;
         const wallY = y;
         filledAreaSelection.append(() =>
           createFilledAreaSelection(
