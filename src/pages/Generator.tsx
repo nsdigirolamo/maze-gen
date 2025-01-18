@@ -78,12 +78,13 @@ const Generator = () => {
 
   return (
     <FormProvider {...formMethods}>
+      <h1 className="text-center my-4">Minecraft Maze Generator</h1>
       <Container fluid>
         <Row>
-          <Col className="ms-3">
+          <Col className="ms-3 min-vh-100">
             <MazeForm onSubmit={handleSubmit} onExport={handleExport} />
           </Col>
-          <Col className="mx-3 col-lg-8">
+          <Col className="mx-3 col-lg-8 d-flex justify-content-center align-items-center">
             {maze ? <Visualizer maze={maze} /> : null}
           </Col>
         </Row>
