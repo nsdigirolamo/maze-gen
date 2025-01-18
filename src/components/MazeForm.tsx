@@ -9,19 +9,6 @@ interface MazeFormProps {
   onExport: MouseEventHandler<HTMLButtonElement>;
 }
 
-const defaultInputs: Inputs = {
-  width: "10",
-  height: "10",
-  mazeCreatorIndex: "0",
-  showSolution: false,
-  corridorWidth: "1",
-  wallWidth: "1",
-  startRow: "0",
-  startColumn: "0",
-  endRow: "9",
-  endColumn: "9",
-};
-
 const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
   const { getValues, setValue, register, handleSubmit } =
     useFormContext<Inputs>();
@@ -36,19 +23,11 @@ const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Width</Form.Label>
-          <Form.Control
-            defaultValue={defaultInputs.width}
-            type="number"
-            {...register("width", { min: 1 })}
-          />
+          <Form.Control type="number" {...register("width", { min: 1 })} />
         </Form.Group>
         <Form.Group className="col">
           <Form.Label>Height</Form.Label>
-          <Form.Control
-            defaultValue={defaultInputs.height}
-            type="number"
-            {...register("height", { min: 1 })}
-          />
+          <Form.Control type="number" {...register("height", { min: 1 })} />
         </Form.Group>
       </Row>
 
