@@ -5,6 +5,7 @@ import { useWatch } from "react-hook-form";
 import Inputs from "../models/inputs";
 import MazeVisual from "./MazeVisual";
 import SolutionVisual from "./SolutionVisual";
+import CoordinateVisual from "./CoordinateVisual";
 
 const scale = 10;
 
@@ -73,6 +74,18 @@ function Visualizer({ maze }: VisualizerProps): ReactElement {
         corridorWidth={corridorWidth}
         wallWidth={wallWidth}
         isDisplayed={showSolution as boolean}
+      />
+      <CoordinateVisual
+        corridorWidth={corridorWidth}
+        wallWidth={wallWidth}
+        coordinate={start}
+        fill="blue"
+      />
+      <CoordinateVisual
+        corridorWidth={corridorWidth}
+        wallWidth={wallWidth}
+        coordinate={end}
+        fill="blue"
       />
     </svg>
   );
