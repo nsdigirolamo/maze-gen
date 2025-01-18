@@ -91,9 +91,6 @@ const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
           Use the controls to generate a maze.
           <br />
           Large mazes may take some time to generate.
-          <br />
-          Created by{" "}
-          <a href="https://www.nsdigirolamo.com">Nicholas DiGirolamo</a>
         </div>
       </Row>
 
