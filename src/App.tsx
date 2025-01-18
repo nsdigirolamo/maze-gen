@@ -1,10 +1,9 @@
-import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import Generator from "./pages/Generator";
 
 function App() {
   return (
     <>
-      
       <Generator />
     </>
   );
