@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, ToggleButton } from "react-bootstrap";
+import { Button, Form, Row, ToggleButton } from "react-bootstrap";
 import MAZE_CREATORS from "../constants/maze-creators";
 import { MouseEventHandler, useState } from "react";
 import Inputs from "../models/inputs";
@@ -18,68 +18,72 @@ const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <h4 className="mb-3">Options</h4>
-
-      <Row className="mb-3">
-        <Form.Group className="col">
-          <Form.Label>Width</Form.Label>
-          <Form.Control type="number" {...register("width", { min: 1 })} />
-        </Form.Group>
-        <Form.Group className="col">
-          <Form.Label>Height</Form.Label>
-          <Form.Control type="number" {...register("height", { min: 1 })} />
-        </Form.Group>
-      </Row>
-
-      <Row className="mb-3">
-        <Form.Group className="col">
-          <Form.Label>Algorithm</Form.Label>
-          <Form.Select {...register("mazeCreatorIndex")}>
-            {MAZE_CREATORS.map((element, index) => (
-              <option value={index} key={index} label={element.name} />
-            ))}
-          </Form.Select>
-        </Form.Group>
-      </Row>
-
       <Row>
-        <div>
-          <Button variant="primary" type="submit" className="me-3 mb-3">
-            Generate Maze
-          </Button>
-          <ToggleButton
-            id="showSolution"
-            className="mb-3"
-            type="checkbox"
-            variant="outline-secondary"
-            checked={getValues("showSolution")}
-            value="1"
-            onClick={() => setValue("showSolution", !getValues("showSolution"))}
-          >
-            {showSolution ? "Hide Solution" : "Show Solution"}
-          </ToggleButton>
-        </div>
-      </Row>
+        <h4 className="mb-3">Options</h4>
 
-      <Row>
-        <div>
-          <Button className="me-3 mb-3" variant="primary" onClick={onExport}>
-            Export to Data Pack
-          </Button>
-          <ToggleButton
-            id="hideAdvancedOptions"
-            className="mb-3"
-            type="checkbox"
-            variant="outline-secondary"
-            checked={!advancedOptionsHidden}
-            value="1"
-            onClick={() => setAdvancedOptionsHidden(!advancedOptionsHidden)}
-          >
-            {advancedOptionsHidden
-              ? "Show Advanced Options"
-              : "Hide Advanced Options"}
-          </ToggleButton>
-        </div>
+        <Row className="mb-3">
+          <Form.Group className="col">
+            <Form.Label>Width</Form.Label>
+            <Form.Control type="number" {...register("width", { min: 1 })} />
+          </Form.Group>
+          <Form.Group className="col">
+            <Form.Label>Height</Form.Label>
+            <Form.Control type="number" {...register("height", { min: 1 })} />
+          </Form.Group>
+        </Row>
+
+        <Row className="mb-3">
+          <Form.Group className="col">
+            <Form.Label>Algorithm</Form.Label>
+            <Form.Select {...register("mazeCreatorIndex")}>
+              {MAZE_CREATORS.map((element, index) => (
+                <option value={index} key={index} label={element.name} />
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Row>
+
+        <Row>
+          <div>
+            <Button variant="primary" type="submit" className="me-3 mb-3">
+              Generate Maze
+            </Button>
+            <ToggleButton
+              id="showSolution"
+              className="mb-3"
+              type="checkbox"
+              variant="outline-secondary"
+              checked={getValues("showSolution")}
+              value="1"
+              onClick={() =>
+                setValue("showSolution", !getValues("showSolution"))
+              }
+            >
+              {showSolution ? "Hide Solution" : "Show Solution"}
+            </ToggleButton>
+          </div>
+        </Row>
+
+        <Row>
+          <div>
+            <Button className="me-3 mb-3" variant="primary" onClick={onExport}>
+              Export to Data Pack
+            </Button>
+            <ToggleButton
+              id="hideAdvancedOptions"
+              className="mb-3"
+              type="checkbox"
+              variant="outline-secondary"
+              checked={!advancedOptionsHidden}
+              value="1"
+              onClick={() => setAdvancedOptionsHidden(!advancedOptionsHidden)}
+            >
+              {advancedOptionsHidden
+                ? "Show Advanced Options"
+                : "Hide Advanced Options"}
+            </ToggleButton>
+          </div>
+        </Row>
       </Row>
 
       <Row>
@@ -114,56 +118,46 @@ const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
         </Row>
 
         <Row className="mb-3">
-          <Col>
-            Start
-            <Row>
-              <Form.Group className="col">
-                <Form.Label>Row</Form.Label>
-                <Form.Control
-                  type="number"
-                  {...register("startRow", {
-                    min: 0,
-                    max: getValues("height"),
-                  })}
-                />
-              </Form.Group>
-              <Form.Group className="col">
-                <Form.Label>Column</Form.Label>
-                <Form.Control
-                  type="number"
-                  {...register("startColumn", {
-                    min: 0,
-                    max: getValues("width"),
-                  })}
-                />
-              </Form.Group>
-            </Row>
-          </Col>
+          <Form.Group className="col">
+            <Form.Label>Start Row</Form.Label>
+            <Form.Control
+              type="number"
+              {...register("startRow", {
+                min: 0,
+                max: getValues("height"),
+              })}
+            />
+          </Form.Group>
+          <Form.Group className="col">
+            <Form.Label>Start Column</Form.Label>
+            <Form.Control
+              type="number"
+              {...register("startColumn", {
+                min: 0,
+                max: getValues("width"),
+              })}
+            />
+          </Form.Group>
         </Row>
 
         <Row className="mb-3">
-          <Col>
-            End
-            <Row>
-              <Form.Group className="col">
-                <Form.Label>Row</Form.Label>
-                <Form.Control
-                  type="number"
-                  {...register("endRow", { min: 0, max: getValues("height") })}
-                />
-              </Form.Group>
-              <Form.Group className="col">
-                <Form.Label>Column</Form.Label>
-                <Form.Control
-                  type="number"
-                  {...register("endColumn", {
-                    min: 0,
-                    max: getValues("width"),
-                  })}
-                />
-              </Form.Group>
-            </Row>
-          </Col>
+          <Form.Group className="col">
+            <Form.Label>End Row</Form.Label>
+            <Form.Control
+              type="number"
+              {...register("endRow", { min: 0, max: getValues("height") })}
+            />
+          </Form.Group>
+          <Form.Group className="col">
+            <Form.Label>End Column</Form.Label>
+            <Form.Control
+              type="number"
+              {...register("endColumn", {
+                min: 0,
+                max: getValues("width"),
+              })}
+            />
+          </Form.Group>
         </Row>
       </Row>
     </Form>

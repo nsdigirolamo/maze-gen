@@ -80,13 +80,11 @@ const Generator = () => {
     <FormProvider {...formMethods}>
       <Container fluid>
         <Row>
-          <Col lg={3}>
+          <Col className="ms-3">
             <MazeForm onSubmit={handleSubmit} onExport={handleExport} />
           </Col>
-          <Col lg={8}>
-            <Row className="d-flex mx-auto">
-              <Col>{maze ? <Visualizer maze={maze} /> : null}</Col>
-            </Row>
+          <Col className="mx-3 col-lg-8">
+            {maze ? <Visualizer maze={maze} /> : null}
           </Col>
         </Row>
       </Container>
