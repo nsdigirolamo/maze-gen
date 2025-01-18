@@ -15,21 +15,26 @@ import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import Inputs from "../models/inputs";
 
 const defaultInputs: Inputs = {
-  width: "10",
-  height: "10",
+  width: "25",
+  height: "25",
   mazeCreatorIndex: "0",
   showSolution: false,
   corridorWidth: "1",
   wallWidth: "1",
   startRow: "0",
   startColumn: "0",
-  endRow: "9",
-  endColumn: "9",
+  endRow: "24",
+  endColumn: "24",
 };
 
 const Generator = () => {
-  const [maze, setMaze] = useState<Maze | null>(null);
   const formMethods = useForm<Inputs>({ defaultValues: defaultInputs });
+  const [maze, setMaze] = useState<Maze>(
+    MAZE_CREATORS[+defaultInputs.mazeCreatorIndex].function(
+      +defaultInputs.width,
+      +defaultInputs.height,
+    ),
+  );
 
   const handleSubmit: SubmitHandler<Inputs> = (inputs) => {
     const mazeCreatorIndex = +inputs.mazeCreatorIndex;
@@ -46,8 +51,6 @@ const Generator = () => {
   };
 
   const handleExport: MouseEventHandler<HTMLButtonElement> = () => {
-    if (maze === null) return;
-
     const inputs = formMethods.getValues();
     const corridorWidth = +inputs.corridorWidth;
     const wallWidth = +inputs.wallWidth;
