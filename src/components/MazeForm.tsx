@@ -72,12 +72,9 @@ const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
             type="checkbox"
             variant="outline-secondary"
             checked={!advancedOptionsHidden}
-            checked={!advancedOptionsHidden}
             value="1"
             onClick={() => setAdvancedOptionsHidden(!advancedOptionsHidden)}
-            onClick={() => setAdvancedOptionsHidden(!advancedOptionsHidden)}
           >
-            {advancedOptionsHidden
             {advancedOptionsHidden
               ? "Show Advanced Options"
               : "Hide Advanced Options"}
@@ -96,7 +93,6 @@ const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
         </div>
       </Row>
 
-      <Row hidden={advancedOptionsHidden}>
       <Row hidden={advancedOptionsHidden}>
         <h4 className="mb-3">Advanced Options</h4>
 

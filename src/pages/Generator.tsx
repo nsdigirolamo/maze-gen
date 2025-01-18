@@ -1,5 +1,5 @@
 import { MouseEventHandler, useState } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Container } from "react-bootstrap";
 import MazeForm from "../components/MazeForm";
 import Visualizer from "../components/Visualizer";
 import Maze from "../models/maze";
@@ -78,84 +78,20 @@ const Generator = () => {
 
   return (
     <FormProvider {...formMethods}>
-      <Row>
-        <Col>
-          <MazeForm onSubmit={handleSubmit} onExport={handleExport} />
-        </Col>
-        <Col sm={8}>{maze ? <Visualizer maze={maze} /> : null}</Col>
-      </Row>
+      <Container fluid>
+        <Row>
+          <Col lg={3}>
+            <MazeForm onSubmit={handleSubmit} onExport={handleExport} />
+          </Col>
+          <Col lg={8}>
+            <Row className="d-flex mx-auto">
+              <Col>{maze ? <Visualizer maze={maze} /> : null}</Col>
+            </Row>
+          </Col>
+        </Row>
+      </Container>
     </FormProvider>
   );
 };
-
-function doValidate(values: MazeFormValues) {
-  const errors: FormikErrors<MazeFormValues> = {};
-
-  // width
-  if (typeof values.width !== "number") {
-    errors.width = "Must be a number";
-  } else if (values.width <= 0) {
-    errors.width = "Must be at least 1";
-  }
-
-  // height
-  if (typeof values.height !== "number") {
-    errors.height = "Must be a number";
-  } else if (values.height <= 0) {
-    errors.height = "Must be at least 1";
-  }
-
-  // mazeCreatorIndex
-  if (typeof values.mazeCreatorIndex !== "number") {
-    errors.mazeCreatorIndex = "Must be a number";
-  } else if (
-    values.mazeCreatorIndex < 0 ||
-    MAZE_CREATORS.length <= values.mazeCreatorIndex
-  ) {
-    errors.mazeCreatorIndex = "Please choose a valid algorithm";
-  }
-
-  // corridorWidth
-  if (typeof values.corridorWidth !== "number") {
-    values.corridorWidth = +values.corridorWidth;
-  }
-
-  // wallWidth
-  if (typeof values.wallWidth !== "number") {
-    values.wallWidth = +values.wallWidth;
-  }
-
-  // startRow
-  if (typeof values.startRow !== "number") {
-    errors.startRow = "Must be a number";
-  } else if (values.startRow < 0 || values.height <= values.startRow) {
-    errors.startRow = `Must be between 0 and ${values.height - 1}`;
-  }
-
-  // startColumn
-  if (typeof values.startColumn !== "number") {
-    errors.startColumn = "Must be a number";
-  } else if (values.startColumn < 0 || values.width <= values.startColumn) {
-    errors.startColumn = `Must be between 0 and ${values.width - 1}`;
-  }
-
-  // endRow
-  if (typeof values.endRow !== "number") {
-    errors.endRow = "Must be a number";
-  } else if (values.endRow < 0 || values.height <= values.endRow) {
-    errors.endRow = `Must be between 0 and ${values.height - 1}`;
-  }
-
-  // endColumn
-  if (typeof values.endColumn !== "number") {
-    errors.endColumn = "Must be a number";
-  } else if (values.endColumn < 0 || values.width <= values.endColumn) {
-    errors.endColumn = `Must be between 0 and ${values.width - 1}`;
-  }
-
-  console.log(errors);
-
-  return errors;
-}
 
 export default Generator;
