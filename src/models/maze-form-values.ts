@@ -12,3 +12,4 @@ interface MazeFormValues {
 }
 
 export default MazeFormValues;
+

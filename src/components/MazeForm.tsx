@@ -1,59 +1,65 @@
-import MazeFormValues from "../models/maze-form-values";
 import { Button, Col, Form, Row, ToggleButton } from "react-bootstrap";
-import { Field, useFormikContext } from "formik";
 import MAZE_CREATORS from "../constants/maze-creators";
-import { useState } from "react";
-import Feedback from "react-bootstrap/esm/Feedback";
-
-const sizeOptions = [1, 2, 3, 4, 5];
+import { MouseEventHandler, useState } from "react";
+import Inputs from "../models/inputs";
+import { SubmitHandler, useFormContext, useWatch } from "react-hook-form";
 
 interface MazeFormProps {
-  onExportClick: (values: MazeFormValues) => void;
+  onSubmit: SubmitHandler<Inputs>;
+  onExport: MouseEventHandler<HTMLButtonElement>;
 }
 
-const MazeForm = ({ onExportClick }: MazeFormProps) => {
+const defaultInputs: Inputs = {
+  width: "10",
+  height: "10",
+  mazeCreatorIndex: "0",
+  showSolution: false,
+  corridorWidth: "1",
+  wallWidth: "1",
+  startRow: "0",
+  startColumn: "0",
+  endRow: "9",
+  endColumn: "9",
+};
+
+const MazeForm = ({ onSubmit, onExport }: MazeFormProps) => {
+  const { getValues, setValue, register, handleSubmit } =
+    useFormContext<Inputs>();
+  const showSolution = useWatch<Inputs>({ name: "showSolution" });
   const [advancedOptionsHidden, setAdvancedOptionsHidden] =
     useState<boolean>(true);
-  const { values, errors, handleSubmit, setFieldValue, getFieldProps } =
-    useFormikContext<MazeFormValues>();
-
-  const handleExportClick = () => onExportClick(values);
 
   return (
-    <Form onSubmit={handleSubmit} noValidate>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <h4 className="mb-3">Options</h4>
 
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Width</Form.Label>
           <Form.Control
-            id="width"
+            defaultValue={defaultInputs.width}
             type="number"
-            isInvalid={errors.width ? true : false}
-            {...getFieldProps("width")}
+            {...register("width", { min: 1 })}
           />
-          <Feedback type="invalid">{errors.width}</Feedback>
         </Form.Group>
         <Form.Group className="col">
           <Form.Label>Height</Form.Label>
           <Form.Control
-            id="height"
+            defaultValue={defaultInputs.height}
             type="number"
-            isInvalid={errors.height ? true : false}
-            {...getFieldProps("height")}
+            {...register("height", { min: 1 })}
           />
-          <Feedback type="invalid">{errors.height}</Feedback>
         </Form.Group>
       </Row>
 
       <Row className="mb-3">
         <Form.Group className="col">
           <Form.Label>Algorithm</Form.Label>
-          <Field className="form-select" name="mazeCreatorIndex" as="select">
+          <Form.Select {...register("mazeCreatorIndex")}>
             {MAZE_CREATORS.map((element, index) => (
               <option value={index} key={index} label={element.name} />
             ))}
-          </Field>
+          </Form.Select>
         </Form.Group>
       </Row>
 
@@ -63,37 +69,36 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
             Generate Maze
           </Button>
           <ToggleButton
-            id="toggle-check"
+            id="showSolution"
             className="mb-3"
             type="checkbox"
             variant="outline-secondary"
-            checked={values.showSolution}
+            checked={getValues("showSolution")}
             value="1"
-            onClick={() => setFieldValue("showSolution", !values.showSolution)}
+            onClick={() => setValue("showSolution", !getValues("showSolution"))}
           >
-            {values.showSolution ? "Hide Solution" : "Show Solution"}
+            {showSolution ? "Hide Solution" : "Show Solution"}
           </ToggleButton>
         </div>
       </Row>
 
       <Row>
         <div>
-          <Button
-            className="me-3 mb-3"
-            variant="primary"
-            onClick={handleExportClick}
-          >
+          <Button className="me-3 mb-3" variant="primary" onClick={onExport}>
             Export to Data Pack
           </Button>
           <ToggleButton
-            id="toggle-check"
+            id="hideAdvancedOptions"
             className="mb-3"
             type="checkbox"
             variant="outline-secondary"
             checked={!advancedOptionsHidden}
+            checked={!advancedOptionsHidden}
             value="1"
             onClick={() => setAdvancedOptionsHidden(!advancedOptionsHidden)}
+            onClick={() => setAdvancedOptionsHidden(!advancedOptionsHidden)}
           >
+            {advancedOptionsHidden
             {advancedOptionsHidden
               ? "Show Advanced Options"
               : "Hide Advanced Options"}
@@ -113,60 +118,49 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
       </Row>
 
       <Row hidden={advancedOptionsHidden}>
+      <Row hidden={advancedOptionsHidden}>
         <h4 className="mb-3">Advanced Options</h4>
 
         <Row className="mb-3">
           <Form.Group className="col">
             <Form.Label>Corridor Width</Form.Label>
-            <Field
-              className="form-select"
-              name="corridorWidth"
-              as="select"
+            <Form.Control
               type="number"
-            >
-              {sizeOptions.map((element, index) => (
-                <option value={element} key={index} label={"" + element} />
-              ))}
-            </Field>
+              {...register("corridorWidth", { min: 1 })}
+            />
           </Form.Group>
           <Form.Group className="col">
             <Form.Label>Wall Width</Form.Label>
-            <Field
-              className="form-select"
-              name="wallWidth"
-              as="select"
+            <Form.Control
               type="number"
-            >
-              {sizeOptions.map((element, index) => (
-                <option value={element} key={index} label={"" + element} />
-              ))}
-            </Field>
+              {...register("wallWidth", { min: 1 })}
+            />
           </Form.Group>
         </Row>
 
         <Row className="mb-3">
           <Col>
-            Start Coordinate
+            Start
             <Row>
               <Form.Group className="col">
                 <Form.Label>Row</Form.Label>
                 <Form.Control
-                  id="startRow"
                   type="number"
-                  isInvalid={errors.startRow ? true : false}
-                  {...getFieldProps("startRow")}
+                  {...register("startRow", {
+                    min: 0,
+                    max: getValues("height"),
+                  })}
                 />
-                <Feedback type="invalid">{errors.startRow}</Feedback>
               </Form.Group>
               <Form.Group className="col">
                 <Form.Label>Column</Form.Label>
                 <Form.Control
-                  id="startColumn"
                   type="number"
-                  isInvalid={errors.startColumn ? true : false}
-                  {...getFieldProps("startColumn")}
+                  {...register("startColumn", {
+                    min: 0,
+                    max: getValues("width"),
+                  })}
                 />
-                <Feedback type="invalid">{errors.startColumn}</Feedback>
               </Form.Group>
             </Row>
           </Col>
@@ -174,27 +168,24 @@ const MazeForm = ({ onExportClick }: MazeFormProps) => {
 
         <Row className="mb-3">
           <Col>
-            End Coordinate
+            End
             <Row>
               <Form.Group className="col">
                 <Form.Label>Row</Form.Label>
                 <Form.Control
-                  id="endRow"
                   type="number"
-                  isInvalid={errors.endRow ? true : false}
-                  {...getFieldProps("endRow")}
+                  {...register("endRow", { min: 0, max: getValues("height") })}
                 />
-                <Feedback type="invalid">{errors.endRow}</Feedback>
               </Form.Group>
               <Form.Group className="col">
                 <Form.Label>Column</Form.Label>
                 <Form.Control
-                  id="endColumn"
                   type="number"
-                  isInvalid={errors.endColumn ? true : false}
-                  {...getFieldProps("endColumn")}
+                  {...register("endColumn", {
+                    min: 0,
+                    max: getValues("width"),
+                  })}
                 />
-                <Feedback type="invalid">{errors.endColumn}</Feedback>
               </Form.Group>
             </Row>
           </Col>
